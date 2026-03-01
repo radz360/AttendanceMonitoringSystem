@@ -122,10 +122,16 @@ CREATE TABLE users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('Admin','Teacher') NOT NULL,
+  role ENUM('Admin','Registrar','Teacher','Student') NOT NULL,
   teacher_id INT NULL,
-  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  student_id INT NULL,
+  is_active INT NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+  FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+  CONSTRAINT fk_users_student FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
+
+SELECT * FROM enrollments;
+-- user: admin
+-- pass: admin123

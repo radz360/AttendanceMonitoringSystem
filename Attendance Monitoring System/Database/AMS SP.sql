@@ -1,16 +1,12 @@
 USE attendance_db;
 
--- ============================================================
--- USERS (Auth)
--- ============================================================
-
 DELIMITER //
 
 CREATE PROCEDURE sp_GetUserByUsername(
     IN p_username VARCHAR(50)
 )
 BEGIN
-    SELECT user_id, username, password_hash, role, teacher_id, is_active
+    SELECT user_id, username, password_hash, role, teacher_id, student_id, is_active
     FROM users
     WHERE username = p_username;
 END //
@@ -18,38 +14,43 @@ END //
 CREATE PROCEDURE sp_CreateUser(
     IN p_username VARCHAR(50),
     IN p_password_hash VARCHAR(255),
-    IN p_role ENUM('Admin','Teacher'),
-    IN p_teacher_id INT
+    IN p_role ENUM('Admin','Registrar','Teacher','Student'),
+    IN p_teacher_id INT,
+    IN p_student_id INT
 )
 BEGIN
-    INSERT INTO users (username, password_hash, role, teacher_id)
-    VALUES (p_username, p_password_hash, p_role, p_teacher_id);
+    INSERT INTO users (username, password_hash, role, teacher_id, student_id)
+    VALUES (p_username, p_password_hash, p_role, p_teacher_id, p_student_id);
 END //
 
 CREATE PROCEDURE sp_GetAllUsers()
 BEGIN
-    SELECT u.user_id, u.username, u.role, u.teacher_id,
+    SELECT u.user_id, u.username, u.role, u.teacher_id, u.student_id,
            CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+           CONCAT(s.first_name, ' ', s.last_name) AS student_name,
            u.is_active
     FROM users u
     LEFT JOIN teachers t ON u.teacher_id = t.teacher_id
+    LEFT JOIN students s ON u.student_id = s.student_id
     ORDER BY u.username;
 END //
 
-CREATE PROCEDURE sp_UpdateUser(
-    IN p_user_id INT,
-    IN p_username VARCHAR(50),
-    IN p_role ENUM('Admin','Teacher'),
-    IN p_teacher_id INT,
-    IN p_is_active TINYINT(1)
-)
-BEGIN
-    UPDATE users
-    SET username = p_username,
-        role = p_role,
-        teacher_id = p_teacher_id,
-        is_active = p_is_active
-    WHERE user_id = p_user_id;
+CREATE PROCEDURE sp_UpdateUser( 
+    IN p_user_id INT, 
+    IN p_username VARCHAR(50), 
+    IN p_role ENUM('Admin','Registrar','Teacher','Student'), 
+    IN p_teacher_id INT, 
+    IN p_student_id INT, 
+    IN p_is_active TINYINT 
+) 
+BEGIN 
+    UPDATE users 
+    SET username = p_username, 
+        role = p_role, 
+        teacher_id = p_teacher_id, 
+        student_id = p_student_id, 
+        is_active = p_is_active 
+    WHERE user_id = p_user_id; 
 END //
 
 CREATE PROCEDURE sp_ResetUserPassword(
@@ -61,10 +62,6 @@ BEGIN
     SET password_hash = p_password_hash
     WHERE user_id = p_user_id;
 END //
-
--- ============================================================
--- STUDENTS
--- ============================================================
 
 CREATE PROCEDURE sp_GetAllStudents()
 BEGIN
@@ -135,10 +132,6 @@ BEGIN
     ORDER BY last_name, first_name;
 END //
 
--- ============================================================
--- TEACHERS
--- ============================================================
-
 CREATE PROCEDURE sp_GetAllTeachers()
 BEGIN
     SELECT teacher_id, first_name, last_name, email, designation
@@ -172,7 +165,7 @@ CREATE PROCEDURE sp_UpdateTeacher(
     IN p_last_name VARCHAR(50),
     IN p_email VARCHAR(100),
     IN p_designation VARCHAR(50)
-)
+    )
 BEGIN
     UPDATE teachers
     SET first_name = p_first_name,
@@ -202,10 +195,6 @@ BEGIN
        OR designation LIKE @kw
     ORDER BY last_name, first_name;
 END //
-
--- ============================================================
--- SUBJECTS
--- ============================================================
 
 CREATE PROCEDURE sp_GetAllSubjects()
 BEGIN
@@ -262,10 +251,6 @@ BEGIN
        OR subject_name LIKE @kw
     ORDER BY subject_code;
 END //
-
--- ============================================================
--- CLASSES
--- ============================================================
 
 CREATE PROCEDURE sp_GetAllClasses()
 BEGIN
@@ -351,10 +336,6 @@ BEGIN
     ORDER BY c.academic_year DESC, c.semester, s.subject_code;
 END //
 
--- ============================================================
--- CLASS SCHEDULE
--- ============================================================
-
 CREATE PROCEDURE sp_GetSchedulesByClassId(
     IN p_class_id INT
 )
@@ -400,10 +381,6 @@ BEGIN
     DELETE FROM class_schedule WHERE schedule_id = p_schedule_id;
 END //
 
--- ============================================================
--- ENROLLMENTS
--- ============================================================
-
 CREATE PROCEDURE sp_GetEnrollmentsByClassId(
     IN p_class_id INT
 )
@@ -447,10 +424,6 @@ BEGIN
     DELETE FROM enrollments WHERE enrollment_id = p_enrollment_id;
 END //
 
--- ============================================================
--- ATTENDANCE SESSIONS
--- ============================================================
-
 CREATE PROCEDURE sp_GetSessionsByClassId(
     IN p_class_id INT
 )
@@ -475,10 +448,6 @@ BEGIN
     VALUES (p_class_id, p_schedule_id, p_session_date, p_created_by_teacher_id);
     SELECT LAST_INSERT_ID() AS session_id;
 END //
-
--- ============================================================
--- ATTENDANCE RECORDS
--- ============================================================
 
 CREATE PROCEDURE sp_GetAttendanceBySession(
     IN p_session_id INT
@@ -517,10 +486,6 @@ BEGIN
         marked_at = CURRENT_TIMESTAMP
     WHERE attendance_record_id = p_attendance_record_id;
 END //
-
--- ============================================================
--- REMARKS
--- ============================================================
 
 CREATE PROCEDURE sp_GetRemarksBySession(
     IN p_session_id INT
@@ -570,6 +535,131 @@ CREATE PROCEDURE sp_DeleteRemark(
 )
 BEGIN
     DELETE FROM remarks WHERE remark_id = p_remark_id;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+-- Get students enrolled in a specific teacher's classes
+CREATE PROCEDURE sp_GetStudentsByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT DISTINCT s.student_id, s.registration_no, s.first_name, s.last_name,
+           s.gender, s.date_of_birth
+    FROM students s
+    INNER JOIN enrollments e ON s.student_id = e.student_id
+    INNER JOIN classes c ON e.class_id = c.class_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY s.last_name, s.first_name;
+END //
+
+-- Get classes assigned to a specific teacher
+CREATE PROCEDURE sp_GetClassesByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT c.class_id, c.subject_id, c.teacher_id,
+           s.subject_code, s.subject_name,
+           CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+           c.academic_year, c.semester, c.section
+    FROM classes c
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY c.academic_year DESC, c.semester, s.subject_code;
+END //
+
+-- Get schedules for a specific teacher
+CREATE PROCEDURE sp_GetSchedulesByTeacherId(
+    IN p_teacher_id INT
+)
+
+BEGIN
+    SELECT cs.schedule_id, cs.class_id, cs.day_of_week, cs.start_time, cs.end_time, cs.room,
+           s.subject_code, s.subject_name, c.section
+    FROM class_schedule cs
+    INNER JOIN classes c ON cs.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY cs.day_of_week, cs.start_time;
+END //
+
+-- Get attendance sessions for a specific teacher's classes
+CREATE PROCEDURE sp_GetSessionsByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT a.session_id, a.class_id, a.schedule_id, a.session_date,
+           a.created_by_teacher_id,
+           CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+           s.subject_code, c.section
+    FROM attendance_sessions a
+    INNER JOIN teachers t ON a.created_by_teacher_id = t.teacher_id
+    INNER JOIN classes c ON a.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY a.session_date DESC;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+-- Get schedule for a specific student
+CREATE PROCEDURE sp_GetSchedulesByStudentId(
+    IN p_student_id INT
+)
+BEGIN
+    SELECT cs.schedule_id, cs.class_id, cs.day_of_week, cs.start_time, cs.end_time, cs.room,
+           s.subject_code, s.subject_name, c.section,
+           CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
+    FROM class_schedule cs
+    INNER JOIN classes c ON cs.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+    INNER JOIN enrollments e ON c.class_id = e.class_id
+    WHERE e.student_id = p_student_id
+    ORDER BY cs.day_of_week, cs.start_time;
+END //
+
+-- Get attendance records for a specific student
+CREATE PROCEDURE sp_GetAttendanceByStudentId(
+    IN p_student_id INT
+)
+BEGIN
+    SELECT ar.attendance_record_id, ar.session_id, ar.student_id,
+           ast.status_name, ar.marked_at,
+           a.session_date,
+           s.subject_code, s.subject_name, c.section
+    FROM attendance_records ar
+    INNER JOIN attendance_status ast ON ar.status_id = ast.status_id
+    INNER JOIN attendance_sessions a ON ar.session_id = a.session_id
+    INNER JOIN classes c ON a.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE ar.student_id = p_student_id
+    ORDER BY a.session_date DESC;
+END //
+
+-- Get remarks for a specific student
+CREATE PROCEDURE sp_GetRemarksByStudentId(
+    IN p_student_id INT
+)
+BEGIN
+    SELECT r.remark_id, r.session_id, r.student_id,
+           CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+           rc.category_name,
+           r.remark_text, r.remark_date,
+           s.subject_code, c.section
+    FROM remarks r
+    INNER JOIN teachers t ON r.teacher_id = t.teacher_id
+    LEFT JOIN remark_categories rc ON r.category_id = rc.category_id
+    INNER JOIN attendance_sessions a ON r.session_id = a.session_id
+    INNER JOIN classes c ON a.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE r.student_id = p_student_id
+    ORDER BY r.remark_date DESC;
 END //
 
 DELIMITER ;

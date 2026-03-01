@@ -7,9 +7,6 @@ namespace Attendance_Monitoring_System
 {
     internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
@@ -17,21 +14,52 @@ namespace Attendance_Monitoring_System
             Application.SetCompatibleTextRenderingDefault(false);
 
             // ─── DEVELOPMENT / TEST MODE ────────────────────────────
-            // Create a dummy user so the dashboard has the data it needs to load
+            // Switch the Role value to test each sidebar configuration
+
+            // Test as Admin — sees ALL 10 nav buttons
             User testUser = new User
             {
+                UserId = 1,
                 Username = "DevAdmin",
-                Role = "Admin" // change this to "Teacher" or "Admin" to test your role restrictions!
+                Role = "Admin",
+                TeacherId = null,
+                StudentId = null
             };
 
-            // Run the dashboard directly
+            // Test as Registrar — hides Attendance, Remarks, Users (7 buttons)
+            // User testUser = new User
+            // {
+            //     UserId = 2,
+            //     Username = "DevRegistrar",
+            //     Role = "Registrar",
+            //     TeacherId = null,
+            //     StudentId = null
+            // };
+
+            // Test as Teacher — sees Dashboard, Students, Schedule, Attendance, Remarks (5 buttons)
+            //User testUser = new User
+            //{
+            //    UserId = 3,
+            //    Username = "DevTeacher",
+            //    Role = "Teacher",
+            //    TeacherId = 1,
+            //    StudentId = null
+            //};
+
+            // Test as Student — sees Dashboard, Schedule, Attendance, Remarks (4 buttons)
+            // User testUser = new User
+            // {
+            //     UserId = 4,
+            //     Username = "DevStudent",
+            //     Role = "Student",
+            //     TeacherId = null,
+            //     StudentId = 1
+            // };
+
             Application.Run(new DashboardForm(testUser));
 
-
             // ─── PRODUCTION MODE ────────────────────────────────────
-            // When you are ready to test the real login flow, comment out the test mode above 
-            // and uncomment the line below:
-            // Application.Run(new LoginForm()); 
+            // Application.Run(new LoginForm());
         }
     }
 }

@@ -47,15 +47,86 @@ namespace Attendance_Monitoring_System.Forms
             // Display user info
             lblUserInfo.Text = "Welcome, " + _currentUser.Username + " (" + _currentUser.Role + ")";
 
-            // Hide User Management button if not Admin
-            if (_currentUser.Role != "Admin")
-            {
-                btnNavUsers.Visible = false;
-            }
+            // Apply role-based sidebar visibility
+            ApplyRolePermissions();
 
             // Show dashboard home by default
             SetActiveButton(btnNavDashboard);
             ShowWelcomePanel();
+        }
+
+        // ── Role-Based Sidebar Visibility ────────────────────────
+        private void ApplyRolePermissions()
+        {
+            // Admin sees everything — no changes needed
+            if (_currentUser.Role == "Admin")
+                return;
+
+            if (_currentUser.Role == "Registrar")
+            {
+                // Registrar: hide Attendance, Remarks, User Management
+                btnNavAttendance.Visible = false;
+                btnNavRemarks.Visible = false;
+                btnNavUsers.Visible = false;
+
+                RepositionSidebarButtons();
+            }
+            else if (_currentUser.Role == "Teacher")
+            {
+                // Teacher: hide Teachers, Subjects, Classes, Enrollment, Users
+                btnNavTeachers.Visible = false;
+                btnNavSubjects.Visible = false;
+                btnNavClasses.Visible = false;
+                btnNavEnrollment.Visible = false;
+                btnNavUsers.Visible = false;
+
+                RepositionSidebarButtons();
+            }
+            else if (_currentUser.Role == "Student")
+            {
+                // Student: only Dashboard, Schedule, Attendance, Remarks
+                btnNavStudents.Visible = false;
+                btnNavTeachers.Visible = false;
+                btnNavSubjects.Visible = false;
+                btnNavClasses.Visible = false;
+                btnNavEnrollment.Visible = false;
+                btnNavUsers.Visible = false;
+
+                RepositionSidebarButtons();
+            }
+        }
+
+        // ── Reposition Sidebar Buttons (remove gaps) ─────────────
+        private void RepositionSidebarButtons()
+        {
+            int yPosition = 95;
+            int buttonHeight = 45;
+
+            Button[] navButtons = new Button[]
+            {
+                btnNavDashboard,
+                btnNavStudents,
+                btnNavTeachers,
+                btnNavSubjects,
+                btnNavClasses,
+                btnNavSchedule,
+                btnNavEnrollment,
+                btnNavAttendance,
+                btnNavRemarks,
+                btnNavUsers
+            };
+
+            foreach (Button btn in navButtons)
+            {
+                if (btn.Visible)
+                {
+                    btn.Location = new Point(0, yPosition);
+                    yPosition += buttonHeight;
+                }
+            }
+
+            // Logout button always stays at the bottom
+            btnNavLogout.Location = new Point(0, 560);
         }
 
         // ── Sidebar Initialization ──────────────────────────────
@@ -101,13 +172,11 @@ namespace Attendance_Monitoring_System.Forms
         // ── Navigation Helper: Highlight Active Button ──────────
         private void SetActiveButton(Button button)
         {
-            // Reset previous active button
             if (_activeButton != null)
             {
                 _activeButton.BackColor = Color.FromArgb(44, 62, 80);
             }
 
-            // Highlight new active button
             _activeButton = button;
             _activeButton.BackColor = Color.FromArgb(52, 73, 94);
         }
@@ -160,55 +229,55 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavStudents_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavStudents);
-            // TODO: LoadFormInPanel(new StudentForm());
+            // TODO: LoadFormInPanel(new StudentForm(_currentUser));
         }
 
         private void btnNavTeachers_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavTeachers);
-            // TODO: LoadFormInPanel(new TeacherForm());
+            // TODO: LoadFormInPanel(new TeacherForm(_currentUser));
         }
 
         private void btnNavSubjects_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavSubjects);
-            // TODO: LoadFormInPanel(new SubjectForm());
+            // TODO: LoadFormInPanel(new SubjectForm(_currentUser));
         }
 
         private void btnNavClasses_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavClasses);
-            // TODO: LoadFormInPanel(new ClassForm());
+            // TODO: LoadFormInPanel(new ClassForm(_currentUser));
         }
 
         private void btnNavSchedule_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavSchedule);
-            // TODO: LoadFormInPanel(new ScheduleForm());
+            // TODO: LoadFormInPanel(new ScheduleForm(_currentUser));
         }
 
         private void btnNavEnrollment_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavEnrollment);
-            // TODO: LoadFormInPanel(new EnrollmentForm());
+            // TODO: LoadFormInPanel(new EnrollmentForm(_currentUser));
         }
 
         private void btnNavAttendance_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavAttendance);
-            // TODO: LoadFormInPanel(new AttendanceForm());
+            // TODO: LoadFormInPanel(new AttendanceForm(_currentUser));
         }
 
         private void btnNavRemarks_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavRemarks);
-            // TODO: LoadFormInPanel(new RemarkForm());
+            // TODO: LoadFormInPanel(new RemarkForm(_currentUser));
         }
 
         private void btnNavUsers_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavUsers);
-            // TODO: LoadFormInPanel(new UserManagementForm());
+            // TODO: LoadFormInPanel(new UserManagementForm(_currentUser));
         }
 
         private void btnNavLogout_Click(object sender, EventArgs e)

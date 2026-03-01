@@ -27,7 +27,6 @@ namespace Attendance_Monitoring_System.Services
                         {
                             bool isActive = reader.GetBoolean("is_active");
 
-                            // Check if account is deactivated
                             if (!isActive)
                             {
                                 return null;
@@ -35,7 +34,6 @@ namespace Attendance_Monitoring_System.Services
 
                             string storedHash = reader.GetString("password_hash");
 
-                            // Verify password using BCrypt
                             if (BCrypt.Net.BCrypt.Verify(password, storedHash))
                             {
                                 User user = new User
@@ -47,6 +45,9 @@ namespace Attendance_Monitoring_System.Services
                                     TeacherId = reader.IsDBNull(reader.GetOrdinal("teacher_id"))
                                                 ? (int?)null
                                                 : reader.GetInt32("teacher_id"),
+                                    StudentId = reader.IsDBNull(reader.GetOrdinal("student_id"))
+                                                ? (int?)null
+                                                : reader.GetInt32("student_id"),
                                     IsActive = isActive
                                 };
 
@@ -57,7 +58,6 @@ namespace Attendance_Monitoring_System.Services
                 }
             }
 
-            // Username not found or password mismatch
             return null;
         }
 
@@ -65,7 +65,7 @@ namespace Attendance_Monitoring_System.Services
         /// Creates a new user account. Only called by Admin from UserManagementForm.
         /// Hashes the password with BCrypt before storing.
         /// </summary>
-        public void CreateUser(string username, string plainPassword, string role, int? teacherId)
+        public void CreateUser(string username, string plainPassword, string role, int? teacherId, int? studentId)
         {
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
 
@@ -81,6 +81,8 @@ namespace Attendance_Monitoring_System.Services
                     cmd.Parameters.AddWithValue("p_role", role);
                     cmd.Parameters.AddWithValue("p_teacher_id",
                         teacherId.HasValue ? (object)teacherId.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("p_student_id",
+                        studentId.HasValue ? (object)studentId.Value : DBNull.Value);
 
                     cmd.ExecuteNonQuery();
                 }
