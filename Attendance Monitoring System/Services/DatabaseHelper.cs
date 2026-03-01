@@ -1,20 +1,15 @@
-﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using System.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace Attendance_Monitoring_System.Services
 {
     public static class DatabaseHelper
     {
         private static readonly string _connectionString =
-            "Server=localhost;" +
-            "Port=3306;" +
-            "Database=attendance_db;" +
-            "Uid=root;" +
-            "Pwd=042006;";
+            ConfigurationManager.ConnectionStrings["AttendanceDb"]?.ConnectionString
+            ?? throw new InvalidOperationException(
+                "Connection string 'AttendanceDb' not found in App.config.");
 
         /// <summary>
         /// Returns a new MySqlConnection. 
@@ -23,6 +18,28 @@ namespace Attendance_Monitoring_System.Services
         public static MySqlConnection GetConnection()
         {
             return new MySqlConnection(_connectionString);
+        }
+
+        /// <summary>
+        /// Tests whether the database connection can be opened successfully.
+        /// Returns true if the connection succeeds, false otherwise.
+        /// </summary>
+        public static bool TestConnection(out string errorMessage)
+        {
+            errorMessage = null;
+            try
+            {
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    return true;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
         }
     }
 }

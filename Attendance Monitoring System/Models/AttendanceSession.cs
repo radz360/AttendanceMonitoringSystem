@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Attendance_Monitoring_System.Models
 {
@@ -14,5 +10,10 @@ namespace Attendance_Monitoring_System.Models
         public DateTime SessionDate { get; set; }
         public int CreatedByTeacherId { get; set; }
         public string TeacherName { get; set; }       // From JOIN
+
+        public override string ToString()
+        {
+            return "Session #" + SessionId + " (" + SessionDate.ToShortDateString() + ")";
+        }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Attendance_Monitoring_System.Models
+﻿namespace Attendance_Monitoring_System.Models
 {
     public class User
     {
@@ -17,5 +11,10 @@ namespace Attendance_Monitoring_System.Models
         public string TeacherName { get; set; }     // For display purposes (from JOIN)
         public string StudentName { get; set; }     // For display purposes (from JOIN)
         public bool IsActive { get; set; }
+
+        public override string ToString()
+        {
+            return Username + " (" + Role + ")";
+        }
     }
 }

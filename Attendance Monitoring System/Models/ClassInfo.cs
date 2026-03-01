@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Attendance_Monitoring_System.Models
+﻿namespace Attendance_Monitoring_System.Models
 {
     public class ClassInfo
     {
@@ -17,5 +11,10 @@ namespace Attendance_Monitoring_System.Models
         public string AcademicYear { get; set; }
         public int Semester { get; set; }
         public string Section { get; set; }
+
+        public override string ToString()
+        {
+            return SubjectCode + " - " + Section + " (" + AcademicYear + ")";
+        }
     }
 }

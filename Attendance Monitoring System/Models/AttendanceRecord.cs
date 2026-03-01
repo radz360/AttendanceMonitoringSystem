@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Attendance_Monitoring_System.Models
 {
@@ -16,5 +12,10 @@ namespace Attendance_Monitoring_System.Models
         public int StatusId { get; set; }
         public string StatusName { get; set; }        // From JOIN
         public DateTime MarkedAt { get; set; }
+
+        public override string ToString()
+        {
+            return StudentName + " - " + StatusName;
+        }
     }
 }
