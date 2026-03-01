@@ -128,6 +128,7 @@
     <Compile Include="Services\DatabaseHelper.cs" />
     <EmbeddedResource Include="Forms\DashboardForm.resx">
       <DependentUpon>DashboardForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -159,10 +160,19 @@
   <ItemGroup>
     <Content Include="Database\AMS SP.sql" />
     <Content Include="Database\Attendance Monitoring System.sql" />
+    <Content Include="Resources\icon_attendance.png" />
+    <Content Include="Resources\icon_classes.png" />
+    <Content Include="Resources\icon_dashboard.png" />
+    <Content Include="Resources\icon_enrollment.png" />
+    <Content Include="Resources\icon_logout.png" />
+    <Content Include="Resources\icon_remarks.png" />
+    <Content Include="Resources\icon_schedule.png" />
+    <Content Include="Resources\icon_students.png" />
+    <Content Include="Resources\icon_subjects.png" />
+    <Content Include="Resources\icon_teachers.png" />
+    <Content Include="Resources\icon_users.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

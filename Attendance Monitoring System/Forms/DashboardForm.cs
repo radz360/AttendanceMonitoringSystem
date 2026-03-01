@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,18 +22,21 @@ namespace Attendance_Monitoring_System.Forms
             InitializeComponent();
             _currentUser = currentUser;
 
+            // Load sidebar icons and setup buttons
+            InitializeSidebar();
+
             // --- Event Handlers ---
-            btnNavDashboard.Click += new EventHandler(btnNavDashboard_Click);
-            btnNavStudents.Click += new EventHandler(btnNavStudents_Click);
-            btnNavTeachers.Click += new EventHandler(btnNavTeachers_Click);
-            btnNavSubjects.Click += new EventHandler(btnNavSubjects_Click);
-            btnNavClasses.Click += new EventHandler(btnNavClasses_Click);
-            btnNavSchedule.Click += new EventHandler(btnNavSchedule_Click);
-            btnNavEnrollment.Click += new EventHandler(btnNavEnrollment_Click);
-            btnNavAttendance.Click += new EventHandler(btnNavAttendance_Click);
-            btnNavRemarks.Click += new EventHandler(btnNavRemarks_Click);
-            btnNavUsers.Click += new EventHandler(btnNavUsers_Click);
-            btnNavLogout.Click += new EventHandler(btnNavLogout_Click);
+            btnNavDashboard.Click += btnNavDashboard_Click;
+            btnNavStudents.Click += btnNavStudents_Click;
+            btnNavTeachers.Click += btnNavTeachers_Click;
+            btnNavSubjects.Click += btnNavSubjects_Click;
+            btnNavClasses.Click += btnNavClasses_Click;
+            btnNavSchedule.Click += btnNavSchedule_Click;
+            btnNavEnrollment.Click += btnNavEnrollment_Click;
+            btnNavAttendance.Click += btnNavAttendance_Click;
+            btnNavRemarks.Click += btnNavRemarks_Click;
+            btnNavUsers.Click += btnNavUsers_Click;
+            btnNavLogout.Click += btnNavLogout_Click;
         }
 
         // ── Form Load ───────────────────────────────────────────
@@ -52,6 +56,33 @@ namespace Attendance_Monitoring_System.Forms
             // Show dashboard home by default
             SetActiveButton(btnNavDashboard);
             ShowWelcomePanel();
+        }
+
+        // ── Sidebar Initialization ──────────────────────────────
+        private void InitializeSidebar()
+        {
+            ConfigureNavButton(btnNavDashboard, "dashboard");
+            ConfigureNavButton(btnNavStudents, "students");
+            ConfigureNavButton(btnNavTeachers, "teachers");
+            ConfigureNavButton(btnNavSubjects, "subjects");
+            ConfigureNavButton(btnNavClasses, "classes");
+            ConfigureNavButton(btnNavSchedule, "schedule");
+            ConfigureNavButton(btnNavEnrollment, "enrollment");
+            ConfigureNavButton(btnNavAttendance, "attendance");
+            ConfigureNavButton(btnNavRemarks, "remarks");
+            ConfigureNavButton(btnNavUsers, "users");
+            ConfigureNavButton(btnNavLogout, "logout");
+        }
+
+        private void ConfigureNavButton(Button btn, string keyName)
+        {
+            btn.ImageList = imageListSidebar;
+            btn.ImageKey = keyName;
+            btn.ImageAlign = ContentAlignment.MiddleLeft;
+            btn.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btn.TextAlign = ContentAlignment.MiddleLeft;
+            btn.Padding = new Padding(10, 0, 0, 0);
+            btn.Text = "  " + btn.Text;
         }
 
         // ── Navigation Helper: Load a Form into Content Panel ───
@@ -118,7 +149,7 @@ namespace Attendance_Monitoring_System.Forms
             pnlContent.Controls.Add(lblRole);
         }
 
-        // ── Navigation Click Handlers ──────────────────��────────
+        // ── Navigation Click Handlers ───────────────────────────
 
         private void btnNavDashboard_Click(object sender, EventArgs e)
         {
