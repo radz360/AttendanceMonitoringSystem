@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Attendance_Monitoring_System.Forms;
 
 namespace Attendance_Monitoring_System
 {
@@ -16,7 +17,7 @@ namespace Attendance_Monitoring_System
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new LoginForm());
         }
     }
 }
