@@ -62,12 +62,20 @@ namespace Attendance_Monitoring_System.Forms
             {
                 if (control is Button btn)
                 {
-                    btn.FlatStyle = FlatStyle.Flat;
-                    btn.FlatAppearance.BorderSize = 0;
-                    btn.BackColor = Color.FromArgb(41, 128, 185);
-                    btn.ForeColor = Color.White;
-                    btn.Cursor = Cursors.Hand;
-                    btn.Height = 40;
+                    // Skip buttons inside the sidebar — they have their own styles
+                    if (btn.Parent != null && btn.Parent.Name == "pnlSidebar")
+                    {
+                        // Do nothing — preserve sidebar styling
+                    }
+                    else
+                    {
+                        btn.FlatStyle = FlatStyle.Flat;
+                        btn.FlatAppearance.BorderSize = 0;
+                        btn.BackColor = Color.FromArgb(41, 128, 185);
+                        btn.ForeColor = Color.White;
+                        btn.Cursor = Cursors.Hand;
+                        btn.Height = 40;
+                    }
                 }
 
                 if (control.HasChildren)

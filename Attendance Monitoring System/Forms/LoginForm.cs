@@ -63,16 +63,12 @@ namespace Attendance_Monitoring_System.Forms
 
                 if (user != null)
                 {
-                    MessageBox.Show("Login successful! Welcome, " + user.Username + ".",
-                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     // Hide login form, open dashboard
                     this.Hide();
 
-                    // TODO: Replace this with DashboardForm once we build it
-                    // DashboardForm dashboard = new DashboardForm(user);
-                    // dashboard.FormClosed += (s, args) => this.Close();
-                    // dashboard.Show();
+                    DashboardForm dashboard = new DashboardForm(user);
+                    dashboard.FormClosed += (s, args) => this.Close();
+                    dashboard.Show();
                 }
                 else
                 {
