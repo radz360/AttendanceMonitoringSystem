@@ -1,13 +1,6 @@
 ﻿using Attendance_Monitoring_System.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Attendance_Monitoring_System.Forms
@@ -58,20 +51,20 @@ namespace Attendance_Monitoring_System.Forms
         // ── Role-Based Sidebar Visibility ────────────────────────
         private void ApplyRolePermissions()
         {
+            string role = _currentUser.Role;
+
             // Admin sees everything — no changes needed
-            if (_currentUser.Role == "Admin")
+            if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
                 return;
 
-            if (_currentUser.Role == "Registrar")
+            if (string.Equals(role, "Registrar", StringComparison.OrdinalIgnoreCase))
             {
                 // Registrar: hide Attendance, Remarks, User Management
                 btnNavAttendance.Visible = false;
                 btnNavRemarks.Visible = false;
                 btnNavUsers.Visible = false;
-
-                RepositionSidebarButtons();
             }
-            else if (_currentUser.Role == "Teacher")
+            else if (string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase))
             {
                 // Teacher: hide Teachers, Subjects, Classes, Enrollment, Users
                 btnNavTeachers.Visible = false;
@@ -79,10 +72,8 @@ namespace Attendance_Monitoring_System.Forms
                 btnNavClasses.Visible = false;
                 btnNavEnrollment.Visible = false;
                 btnNavUsers.Visible = false;
-
-                RepositionSidebarButtons();
             }
-            else if (_currentUser.Role == "Student")
+            else if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
             {
                 // Student: only Dashboard, Schedule, Attendance, Remarks
                 btnNavStudents.Visible = false;
@@ -91,9 +82,9 @@ namespace Attendance_Monitoring_System.Forms
                 btnNavClasses.Visible = false;
                 btnNavEnrollment.Visible = false;
                 btnNavUsers.Visible = false;
-
-                RepositionSidebarButtons();
             }
+
+            RepositionSidebarButtons();
         }
 
         // ── Reposition Sidebar Buttons (remove gaps) ─────────────
@@ -159,6 +150,16 @@ namespace Attendance_Monitoring_System.Forms
         // ── Navigation Helper: Load a Form into Content Panel ───
         private void LoadFormInPanel(Form childForm)
         {
+            // Dispose previous child forms to prevent memory leaks
+            foreach (Control ctrl in pnlContent.Controls)
+            {
+                if (ctrl is Form oldForm)
+                {
+                    oldForm.Close();
+                    oldForm.Dispose();
+                }
+            }
+
             pnlContent.Controls.Clear();
 
             childForm.TopLevel = false;
@@ -295,3 +296,36 @@ namespace Attendance_Monitoring_System.Forms
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

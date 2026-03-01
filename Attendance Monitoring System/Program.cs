@@ -1,5 +1,6 @@
 ﻿using Attendance_Monitoring_System.Forms;
 using Attendance_Monitoring_System.Models;
+using Attendance_Monitoring_System.Services;
 using System;
 using System.Windows.Forms;
 
@@ -12,6 +13,17 @@ namespace Attendance_Monitoring_System
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // ─── DATABASE CONNECTION CHECK ──────────────────────────
+            if (!DatabaseHelper.TestConnection(out string dbError))
+            {
+                MessageBox.Show(
+                    "Cannot connect to the database. Please check your connection settings.\n\n" + dbError,
+                    "Database Connection Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
 
             // ─── DEVELOPMENT / TEST MODE ────────────────────────────
             // Switch the Role value to test each sidebar configuration

@@ -1,9 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Attendance_Monitoring_System.Services
 {
@@ -23,6 +18,28 @@ namespace Attendance_Monitoring_System.Services
         public static MySqlConnection GetConnection()
         {
             return new MySqlConnection(_connectionString);
+        }
+
+        /// <summary>
+        /// Tests whether the database connection can be opened successfully.
+        /// Returns true if the connection succeeds, false otherwise.
+        /// </summary>
+        public static bool TestConnection(out string errorMessage)
+        {
+            errorMessage = null;
+            try
+            {
+                using (MySqlConnection conn = GetConnection())
+                {
+                    conn.Open();
+                    return true;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
         }
     }
 }

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 using Attendance_Monitoring_System.Services;
 
@@ -78,10 +73,15 @@ namespace Attendance_Monitoring_System.Forms
                     txtPassword.Focus();
                 }
             }
-            catch (Exception ex)
+            catch (MySqlException ex)
             {
                 MessageBox.Show("An error occurred while connecting to the database:\n\n" + ex.Message,
                     "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show("Configuration error:\n\n" + ex.Message,
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

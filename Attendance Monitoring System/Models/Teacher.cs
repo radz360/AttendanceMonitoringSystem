@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Attendance_Monitoring_System.Models
+﻿namespace Attendance_Monitoring_System.Models
 {
     public class Teacher
     {
@@ -17,6 +11,11 @@ namespace Attendance_Monitoring_System.Models
         public string FullName
         {
             get { return FirstName + " " + LastName; }
+        }
+
+        public override string ToString()
+        {
+            return FullName + " (" + Designation + ")";
         }
     }
 }

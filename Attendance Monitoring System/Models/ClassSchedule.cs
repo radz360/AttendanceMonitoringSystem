@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Attendance_Monitoring_System.Models
+﻿namespace Attendance_Monitoring_System.Models
 {
     public class ClassSchedule
     {
+        private static readonly string[] DayNames =
+            { "Unknown", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+
         public int ScheduleId { get; set; }
         public int ClassId { get; set; }
         public int DayOfWeek { get; set; }
@@ -20,18 +17,16 @@ namespace Attendance_Monitoring_System.Models
         {
             get
             {
-                switch (DayOfWeek)
-                {
-                    case 1: return "Monday";
-                    case 2: return "Tuesday";
-                    case 3: return "Wednesday";
-                    case 4: return "Thursday";
-                    case 5: return "Friday";
-                    case 6: return "Saturday";
-                    case 7: return "Sunday";
-                    default: return "Unknown";
-                }
+                if (DayOfWeek >= 1 && DayOfWeek <= 7)
+                    return DayNames[DayOfWeek];
+
+                return DayNames[0];
             }
+        }
+
+        public override string ToString()
+        {
+            return DayName + " " + StartTime + "-" + EndTime + " (" + Room + ")";
         }
     }
 }
