@@ -23,6 +23,39 @@ namespace Attendance_Monitoring_System.Forms
             ApplyDataGridStyles(this.Controls);
         }
 
+        // ── Reusable Message Helpers ─────────────────────────────
+
+        protected void ShowSuccess(string message)
+        {
+            MessageBox.Show(message, "Success",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        protected void ShowError(string message)
+        {
+            MessageBox.Show(message, "Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        protected void ShowWarning(string message)
+        {
+            MessageBox.Show(message, "Validation Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        protected bool ConfirmDelete(string itemName = "this record")
+        {
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to delete " + itemName + "?\nThis action cannot be undone.",
+                "Confirm Delete",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            return result == DialogResult.Yes;
+        }
+
+        // ── Style Helpers ────────────────────────────────────────
+
         private void ApplyButtonStyles(Control.ControlCollection controls)
         {
             foreach (Control control in controls)

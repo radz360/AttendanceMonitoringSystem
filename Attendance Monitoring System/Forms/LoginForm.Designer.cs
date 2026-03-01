@@ -136,6 +136,8 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LoginForm";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Attendance Monitoring System - Login";
             this.ResumeLayout(false);
             this.PerformLayout();
