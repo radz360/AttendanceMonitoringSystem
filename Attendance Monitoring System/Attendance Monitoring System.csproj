@@ -151,11 +151,9 @@
     <Content Include="Database\AMS SP.sql" />
     <Content Include="Database\Attendance Monitoring System.sql" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Forms\" />
-    <Folder Include="Models\" />
-    <Folder Include="Services\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
