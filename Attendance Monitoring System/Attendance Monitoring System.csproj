@@ -142,7 +142,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Database\AMS ERD.mwb" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -160,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\AMS SP.sql" />
-    <Content Include="Database\Attendance Monitoring System DB.sql" />
     <Content Include="Resources\icon_attendance.png" />
     <Content Include="Resources\icon_classes.png" />
     <Content Include="Resources\icon_dashboard.png" />
