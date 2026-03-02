@@ -159,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\AMS SP.sql" />
-    <Content Include="Database\Attendance Monitoring System.sql" />
     <Content Include="Resources\icon_attendance.png" />
     <Content Include="Resources\icon_classes.png" />
     <Content Include="Resources\icon_dashboard.png" />
