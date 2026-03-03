@@ -260,7 +260,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavEnrollment_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavEnrollment);
-            // TODO: LoadFormInPanel(new EnrollmentForm(_currentUser));
+            LoadFormInPanel(new EnrollmentForm(_currentUser));
         }
 
         private void btnNavAttendance_Click(object sender, EventArgs e)

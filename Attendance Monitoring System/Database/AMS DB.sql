@@ -131,7 +131,3 @@ CREATE TABLE users (
   FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
   CONSTRAINT fk_users_student FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
-
-SELECT * FROM enrollments;
--- user: admin
--- pass: admin123

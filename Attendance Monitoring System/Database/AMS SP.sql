@@ -1,13 +1,10 @@
 USE attendance_db;
 
-ALTER TABLE users
-  MODIFY COLUMN role ENUM('Admin','Registrar','Teacher','Student') NOT NULL;
-
-ALTER TABLE users
-  ADD COLUMN student_id INT NULL AFTER teacher_id,
-  ADD CONSTRAINT fk_users_student FOREIGN KEY (student_id) REFERENCES students(student_id);
-
 DELIMITER //
+
+-- ─────────────────────────────────────────────────────────
+-- USERS
+-- ─────────────────────────────────────────────────────────
 
 CREATE PROCEDURE sp_GetUserByUsername(
     IN p_username VARCHAR(50)
@@ -48,7 +45,7 @@ CREATE PROCEDURE sp_UpdateUser(
     IN p_role ENUM('Admin','Registrar','Teacher','Student'), 
     IN p_teacher_id INT, 
     IN p_student_id INT, 
-    IN p_is_active TINYINT 
+    IN p_is_active INT 
 ) 
 BEGIN 
     UPDATE users 
@@ -69,6 +66,10 @@ BEGIN
     SET password_hash = p_password_hash
     WHERE user_id = p_user_id;
 END //
+
+-- ─────────────────────────────────────────────────────────
+-- STUDENTS
+-- ─────────────────────────────────────────────────────────
 
 CREATE PROCEDURE sp_GetAllStudents()
 BEGIN
@@ -139,6 +140,10 @@ BEGIN
     ORDER BY last_name, first_name;
 END //
 
+-- ─────────────────────────────────────────────────────────
+-- TEACHERS
+-- ─────────────────────────────────────────────────────────
+
 CREATE PROCEDURE sp_GetAllTeachers()
 BEGIN
     SELECT teacher_id, first_name, last_name, email, designation
@@ -203,6 +208,10 @@ BEGIN
     ORDER BY last_name, first_name;
 END //
 
+-- ─────────────────────────────────────────────────────────
+-- SUBJECTS
+-- ─────────────────────────────────────────────────────────
+
 CREATE PROCEDURE sp_GetAllSubjects()
 BEGIN
     SELECT subject_id, subject_code, subject_name
@@ -258,6 +267,10 @@ BEGIN
        OR subject_name LIKE @kw
     ORDER BY subject_code;
 END //
+
+-- ─────────────────────────────────────────────────────────
+-- CLASSES
+-- ─────────────────────────────────────────────────────────
 
 CREATE PROCEDURE sp_GetAllClasses()
 BEGIN
@@ -343,6 +356,10 @@ BEGIN
     ORDER BY c.academic_year DESC, c.semester, s.subject_code;
 END //
 
+-- ─────────────────────────────────────────────────────────
+-- SCHEDULES
+-- ─────────────────────────────────────────────────────────
+
 CREATE PROCEDURE sp_GetSchedulesByClassId(
     IN p_class_id INT
 )
@@ -388,29 +405,36 @@ BEGIN
     DELETE FROM class_schedule WHERE schedule_id = p_schedule_id;
 END //
 
-CREATE PROCEDURE sp_GetEnrollmentsByClassId(
+-- ─────────────────────────────────────────────────────────
+-- ENROLLMENTS (Consolidated)
+-- ─────────────────────────────────────────────────────────
+
+CREATE PROCEDURE sp_GetEnrolledStudents(
     IN p_class_id INT
 )
 BEGIN
-    SELECT e.enrollment_id, e.class_id, e.student_id,
-           s.registration_no,
-           CONCAT(s.first_name, ' ', s.last_name) AS student_name,
-           e.enrolled_at
+    SELECT e.enrollment_id, e.class_id, e.enrolled_at,
+           s.student_id, s.registration_no, s.first_name, 
+           s.last_name, CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+           s.gender, s.date_of_birth
     FROM enrollments e
     INNER JOIN students s ON e.student_id = s.student_id
     WHERE e.class_id = p_class_id
     ORDER BY s.last_name, s.first_name;
 END //
 
-CREATE PROCEDURE sp_GetUnenrolledStudents(
+CREATE PROCEDURE sp_GetAvailableStudents(
     IN p_class_id INT
 )
 BEGIN
-    SELECT s.student_id, s.registration_no,
-           CONCAT(s.first_name, ' ', s.last_name) AS student_name
+    SELECT s.student_id, s.registration_no, s.first_name, 
+           s.last_name, CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+           s.gender, s.date_of_birth
     FROM students s
     WHERE s.student_id NOT IN (
-        SELECT student_id FROM enrollments WHERE class_id = p_class_id
+        SELECT e.student_id 
+        FROM enrollments e 
+        WHERE e.class_id = p_class_id
     )
     ORDER BY s.last_name, s.first_name;
 END //
@@ -430,6 +454,23 @@ CREATE PROCEDURE sp_UnenrollStudent(
 BEGIN
     DELETE FROM enrollments WHERE enrollment_id = p_enrollment_id;
 END //
+
+CREATE PROCEDURE sp_GetStudentsByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT DISTINCT s.student_id, s.registration_no, s.first_name, s.last_name,
+           s.gender, s.date_of_birth
+    FROM students s
+    INNER JOIN enrollments e ON s.student_id = e.student_id
+    INNER JOIN classes c ON e.class_id = c.class_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY s.last_name, s.first_name;
+END //
+
+-- ─────────────────────────────────────────────────────────
+-- ATTENDANCE SESSIONS & RECORDS
+-- ─────────────────────────────────────────────────────────
 
 CREATE PROCEDURE sp_GetSessionsByClassId(
     IN p_class_id INT
@@ -494,6 +535,10 @@ BEGIN
     WHERE attendance_record_id = p_attendance_record_id;
 END //
 
+-- ─────────────────────────────────────────────────────────
+-- REMARKS
+-- ─────────────────────────────────────────────────────────
+
 CREATE PROCEDURE sp_GetRemarksBySession(
     IN p_session_id INT
 )
@@ -542,23 +587,6 @@ CREATE PROCEDURE sp_DeleteRemark(
 )
 BEGIN
     DELETE FROM remarks WHERE remark_id = p_remark_id;
-END //
-
-DELIMITER ;
-
-DELIMITER //
-
-CREATE PROCEDURE sp_GetStudentsByTeacherId(
-    IN p_teacher_id INT
-)
-BEGIN
-    SELECT DISTINCT s.student_id, s.registration_no, s.first_name, s.last_name,
-           s.gender, s.date_of_birth
-    FROM students s
-    INNER JOIN enrollments e ON s.student_id = e.student_id
-    INNER JOIN classes c ON e.class_id = c.class_id
-    WHERE c.teacher_id = p_teacher_id
-    ORDER BY s.last_name, s.first_name;
 END //
 
 DELIMITER ;

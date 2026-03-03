@@ -135,9 +135,9 @@ namespace Attendance_Monitoring_System.Forms
                 }
 
                 cmbClass.DataSource = null;
-                cmbClass.DataSource = displayItems;
                 cmbClass.DisplayMember = "DisplayText";
                 cmbClass.ValueMember = "ClassId";
+                cmbClass.DataSource = displayItems;
 
                 if (cmbClass.Items.Count > 0)
                     cmbClass.SelectedIndex = 0;
