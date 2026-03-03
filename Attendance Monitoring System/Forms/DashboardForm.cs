@@ -278,7 +278,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavUsers_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavUsers);
-            // TODO: LoadFormInPanel(new UserManagementForm(_currentUser));
+            LoadFormInPanel(new UserManagementForm(_currentUser));
         }
 
         private void btnNavLogout_Click(object sender, EventArgs e)
