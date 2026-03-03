@@ -254,7 +254,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavSchedule_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavSchedule);
-            // TODO: LoadFormInPanel(new ScheduleForm(_currentUser));
+            LoadFormInPanel(new ScheduleForm(_currentUser));
         }
 
         private void btnNavEnrollment_Click(object sender, EventArgs e)
