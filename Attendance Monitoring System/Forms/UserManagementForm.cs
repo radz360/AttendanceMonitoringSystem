@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Attendance_Monitoring_System.Models;
 using Attendance_Monitoring_System.Services;
@@ -354,11 +355,14 @@ namespace Attendance_Monitoring_System.Forms
                 return;
             }
 
-            // Prompt for new password using a simple custom dialog
-            string newPassword = ShowPasswordInputDialog();
+            // Prompt for new password
+            string newPassword = Microsoft.VisualBasic.Interaction.InputBox(
+                "Enter new password (minimum 8 characters):",
+                "Reset Password",
+                "");
 
-            if (newPassword == null)
-                return; // User cancelled
+            if (string.IsNullOrWhiteSpace(newPassword))
+                return;
 
             if (newPassword.Length < 8)
             {
@@ -374,68 +378,6 @@ namespace Attendance_Monitoring_System.Forms
             catch (Exception ex)
             {
                 ShowError("Failed to reset password:\n\n" + ex.Message);
-            }
-        }
-
-        // ── Custom Password Input Dialog ─────────────────────────
-        private string ShowPasswordInputDialog()
-        {
-            using (Form dialog = new Form())
-            {
-                dialog.Text = "Reset Password";
-                dialog.Size = new Size(380, 170);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                Label lbl = new Label
-                {
-                    Text = "Enter new password (minimum 8 characters):",
-                    Location = new Point(15, 15),
-                    AutoSize = true
-                };
-
-                TextBox txt = new TextBox
-                {
-                    Location = new Point(15, 40),
-                    Size = new Size(330, 25),
-                    UseSystemPasswordChar = true,
-                    MaxLength = 50
-                };
-
-                Button btnOk = new Button
-                {
-                    Text = "OK",
-                    DialogResult = DialogResult.OK,
-                    Location = new Point(180, 80),
-                    Size = new Size(80, 30)
-                };
-
-                Button btnCancel = new Button
-                {
-                    Text = "Cancel",
-                    DialogResult = DialogResult.Cancel,
-                    Location = new Point(265, 80),
-                    Size = new Size(80, 30)
-                };
-
-                dialog.Controls.Add(lbl);
-                dialog.Controls.Add(txt);
-                dialog.Controls.Add(btnOk);
-                dialog.Controls.Add(btnCancel);
-                dialog.AcceptButton = btnOk;
-                dialog.CancelButton = btnCancel;
-
-                if (dialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    string value = txt.Text.Trim();
-                    if (string.IsNullOrWhiteSpace(value))
-                        return null;
-                    return value;
-                }
-
-                return null;
             }
         }
 
