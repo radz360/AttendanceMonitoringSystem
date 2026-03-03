@@ -56,7 +56,7 @@
             this.lblFormTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.lblFormTitle.Location = new System.Drawing.Point(20, 15);
             this.lblFormTitle.Name = "lblFormTitle";
-            this.lblFormTitle.Size = new System.Drawing.Size(234, 30);
+            this.lblFormTitle.Size = new System.Drawing.Size(223, 30);
             this.lblFormTitle.TabIndex = 0;
             this.lblFormTitle.Text = "Teacher Management";
             // 
@@ -78,12 +78,12 @@
             this.pnlInput.Controls.Add(this.lblFirstName);
             this.pnlInput.Location = new System.Drawing.Point(20, 55);
             this.pnlInput.Name = "pnlInput";
-            this.pnlInput.Size = new System.Drawing.Size(800, 200);
+            this.pnlInput.Size = new System.Drawing.Size(800, 160);
             this.pnlInput.TabIndex = 2;
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(470, 140);
+            this.btnClear.Location = new System.Drawing.Point(470, 100);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(100, 40);
             this.btnClear.TabIndex = 11;
@@ -92,7 +92,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(360, 140);
+            this.btnDelete.Location = new System.Drawing.Point(360, 100);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 40);
             this.btnDelete.TabIndex = 10;
@@ -101,7 +101,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(250, 140);
+            this.btnUpdate.Location = new System.Drawing.Point(250, 100);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(100, 40);
             this.btnUpdate.TabIndex = 9;
@@ -110,7 +110,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(140, 140);
+            this.btnAdd.Location = new System.Drawing.Point(140, 100);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(100, 40);
             this.btnAdd.TabIndex = 8;
@@ -154,7 +154,7 @@
             this.lblDesignation.AutoSize = true;
             this.lblDesignation.Location = new System.Drawing.Point(400, 53);
             this.lblDesignation.Name = "lblDesignation";
-            this.lblDesignation.Size = new System.Drawing.Size(79, 19);
+            this.lblDesignation.Size = new System.Drawing.Size(82, 19);
             this.lblDesignation.TabIndex = 3;
             this.lblDesignation.Text = "Designation";
             // 
@@ -188,7 +188,7 @@
             // lblSearch
             // 
             this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(20, 270);
+            this.lblSearch.Location = new System.Drawing.Point(20, 230);
             this.lblSearch.Name = "lblSearch";
             this.lblSearch.Size = new System.Drawing.Size(52, 19);
             this.lblSearch.TabIndex = 3;
@@ -196,7 +196,7 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(80, 267);
+            this.txtSearch.Location = new System.Drawing.Point(80, 227);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(300, 25);
             this.txtSearch.TabIndex = 4;
@@ -206,11 +206,11 @@
             this.dgvTeachers.AllowUserToAddRows = false;
             this.dgvTeachers.AllowUserToDeleteRows = false;
             this.dgvTeachers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTeachers.Location = new System.Drawing.Point(20, 300);
+            this.dgvTeachers.Location = new System.Drawing.Point(20, 260);
             this.dgvTeachers.MultiSelect = false;
             this.dgvTeachers.Name = "dgvTeachers";
             this.dgvTeachers.ReadOnly = true;
-            this.dgvTeachers.Size = new System.Drawing.Size(800, 250);
+            this.dgvTeachers.Size = new System.Drawing.Size(800, 290);
             this.dgvTeachers.TabIndex = 5;
             // 
             // TeacherForm

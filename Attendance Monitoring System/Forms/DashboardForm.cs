@@ -242,7 +242,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavSubjects_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavSubjects);
-            // TODO: LoadFormInPanel(new SubjectForm(_currentUser));
+            LoadFormInPanel(new SubjectForm(_currentUser));
         }
 
         private void btnNavClasses_Click(object sender, EventArgs e)
