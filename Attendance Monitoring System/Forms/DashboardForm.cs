@@ -272,7 +272,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavRemarks_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavRemarks);
-            // TODO: LoadFormInPanel(new RemarkForm(_currentUser));
+            LoadFormInPanel(new RemarkForm(_currentUser));
         }
 
         private void btnNavUsers_Click(object sender, EventArgs e)

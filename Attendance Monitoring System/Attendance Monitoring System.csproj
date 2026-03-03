@@ -131,6 +131,12 @@
     <Compile Include="Forms\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\RemarkForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RemarkForm.Designer.cs">
+      <DependentUpon>RemarkForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ScheduleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,6 +167,8 @@
     <Compile Include="Models\ClassSchedule.cs" />
     <Compile Include="Models\Enrollment.cs" />
     <Compile Include="Models\Remark.cs" />
+    <Compile Include="Models\RemarkCategory.cs" />
+    <Compile Include="Models\SessionStudentItem.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Teacher.cs" />
@@ -170,6 +178,7 @@
     <Compile Include="Services\ClassService.cs" />
     <Compile Include="Services\DatabaseHelper.cs" />
     <Compile Include="Services\EnrollmentService.cs" />
+    <Compile Include="Services\RemarkService.cs" />
     <Compile Include="Services\ScheduleService.cs" />
     <Compile Include="Services\StudentService.cs" />
     <Compile Include="Services\SubjectService.cs" />
@@ -189,6 +198,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RemarkForm.resx">
+      <DependentUpon>RemarkForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ScheduleForm.resx">
       <DependentUpon>ScheduleForm.cs</DependentUpon>
@@ -228,9 +240,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database\AMS Attendance SP.sql" />
     <Content Include="Database\AMS DB.sql" />
-    <Content Include="Database\AMS SP.sql" />
     <Content Include="Resources\icon_attendance.png" />
     <Content Include="Resources\icon_classes.png" />
     <Content Include="Resources\icon_dashboard.png" />
