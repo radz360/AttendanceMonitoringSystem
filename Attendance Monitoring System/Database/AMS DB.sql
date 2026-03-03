@@ -86,6 +86,7 @@ CREATE TABLE attendance_records (
   session_id INT NOT NULL,
   student_id INT NOT NULL,
   status_id INT NOT NULL,
+  time_in DATETIME NULL,
   marked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (session_id) REFERENCES attendance_sessions(session_id),
   FOREIGN KEY (student_id) REFERENCES students(student_id),
