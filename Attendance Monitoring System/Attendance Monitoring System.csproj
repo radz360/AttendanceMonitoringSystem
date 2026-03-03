@@ -98,13 +98,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\AttendanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AttendanceForm.Designer.cs">
+      <DependentUpon>AttendanceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ClassForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ClassForm.Designer.cs" />
+    <Compile Include="Forms\ClassForm.Designer.cs">
+      <DependentUpon>ClassForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,7 +122,9 @@
     <Compile Include="Forms\EnrollmentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\EnrollmentForm.Designer.cs" />
+    <Compile Include="Forms\EnrollmentForm.Designer.cs">
+      <DependentUpon>EnrollmentForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,7 +134,9 @@
     <Compile Include="Forms\ScheduleForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ScheduleForm.Designer.cs" />
+    <Compile Include="Forms\ScheduleForm.Designer.cs">
+      <DependentUpon>ScheduleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SubjectForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +174,9 @@
     <Compile Include="Services\StudentService.cs" />
     <Compile Include="Services\SubjectService.cs" />
     <Compile Include="Services\TeacherService.cs" />
+    <EmbeddedResource Include="Forms\AttendanceForm.resx">
+      <DependentUpon>AttendanceForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ClassForm.resx">
       <DependentUpon>ClassForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,12 +221,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Services\AttendanceService.cs" />
     <Compile Include="Services\AuthService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database\AMS Attendance SP.sql" />
     <Content Include="Database\AMS DB.sql" />
     <Content Include="Database\AMS SP.sql" />
     <Content Include="Resources\icon_attendance.png" />
