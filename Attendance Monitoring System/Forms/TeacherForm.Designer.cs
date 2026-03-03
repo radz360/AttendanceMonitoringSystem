@@ -1,6 +1,6 @@
 ﻿namespace Attendance_Monitoring_System.Forms
 {
-    partial class StudentForm
+    partial class TeacherForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,26 +29,24 @@
         private void InitializeComponent()
         {
             this.lblFormTitle = new System.Windows.Forms.Label();
-            this.lblRegNo = new System.Windows.Forms.Label();
             this.pnlInput = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
-            this.dtpDateOfBirth = new System.Windows.Forms.DateTimePicker();
-            this.cmbGender = new System.Windows.Forms.ComboBox();
+            this.txtDesignation = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtLastName = new System.Windows.Forms.TextBox();
             this.txtFirstName = new System.Windows.Forms.TextBox();
-            this.txtRegNo = new System.Windows.Forms.TextBox();
-            this.lblGender = new System.Windows.Forms.Label();
-            this.lblDOB = new System.Windows.Forms.Label();
+            this.lblDesignation = new System.Windows.Forms.Label();
+            this.lblEmail = new System.Windows.Forms.Label();
             this.lblLastName = new System.Windows.Forms.Label();
             this.lblFirstName = new System.Windows.Forms.Label();
             this.lblSearch = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.dgvStudents = new System.Windows.Forms.DataGridView();
+            this.dgvTeachers = new System.Windows.Forms.DataGridView();
             this.pnlInput.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTeachers)).BeginInit();
             this.SuspendLayout();
             // 
             // lblFormTitle
@@ -58,18 +56,9 @@
             this.lblFormTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.lblFormTitle.Location = new System.Drawing.Point(20, 15);
             this.lblFormTitle.Name = "lblFormTitle";
-            this.lblFormTitle.Size = new System.Drawing.Size(226, 30);
+            this.lblFormTitle.Size = new System.Drawing.Size(234, 30);
             this.lblFormTitle.TabIndex = 0;
-            this.lblFormTitle.Text = "Student Management";
-            // 
-            // lblRegNo
-            // 
-            this.lblRegNo.AutoSize = true;
-            this.lblRegNo.Location = new System.Drawing.Point(20, 18);
-            this.lblRegNo.Name = "lblRegNo";
-            this.lblRegNo.Size = new System.Drawing.Size(104, 19);
-            this.lblRegNo.TabIndex = 1;
-            this.lblRegNo.Text = "Registration No";
+            this.lblFormTitle.Text = "Teacher Management";
             // 
             // pnlInput
             // 
@@ -79,16 +68,14 @@
             this.pnlInput.Controls.Add(this.btnDelete);
             this.pnlInput.Controls.Add(this.btnUpdate);
             this.pnlInput.Controls.Add(this.btnAdd);
-            this.pnlInput.Controls.Add(this.dtpDateOfBirth);
-            this.pnlInput.Controls.Add(this.cmbGender);
+            this.pnlInput.Controls.Add(this.txtDesignation);
+            this.pnlInput.Controls.Add(this.txtEmail);
             this.pnlInput.Controls.Add(this.txtLastName);
             this.pnlInput.Controls.Add(this.txtFirstName);
-            this.pnlInput.Controls.Add(this.txtRegNo);
-            this.pnlInput.Controls.Add(this.lblGender);
-            this.pnlInput.Controls.Add(this.lblDOB);
+            this.pnlInput.Controls.Add(this.lblDesignation);
+            this.pnlInput.Controls.Add(this.lblEmail);
             this.pnlInput.Controls.Add(this.lblLastName);
             this.pnlInput.Controls.Add(this.lblFirstName);
-            this.pnlInput.Controls.Add(this.lblRegNo);
             this.pnlInput.Location = new System.Drawing.Point(20, 55);
             this.pnlInput.Name = "pnlInput";
             this.pnlInput.Size = new System.Drawing.Size(800, 200);
@@ -99,7 +86,7 @@
             this.btnClear.Location = new System.Drawing.Point(470, 140);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(100, 40);
-            this.btnClear.TabIndex = 15;
+            this.btnClear.TabIndex = 11;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             // 
@@ -108,7 +95,7 @@
             this.btnDelete.Location = new System.Drawing.Point(360, 140);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(100, 40);
-            this.btnDelete.TabIndex = 14;
+            this.btnDelete.TabIndex = 10;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
             // 
@@ -117,7 +104,7 @@
             this.btnUpdate.Location = new System.Drawing.Point(250, 140);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(100, 40);
-            this.btnUpdate.TabIndex = 13;
+            this.btnUpdate.TabIndex = 9;
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = true;
             // 
@@ -126,85 +113,76 @@
             this.btnAdd.Location = new System.Drawing.Point(140, 140);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(100, 40);
-            this.btnAdd.TabIndex = 12;
+            this.btnAdd.TabIndex = 8;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
             // 
-            // dtpDateOfBirth
+            // txtDesignation
             // 
-            this.dtpDateOfBirth.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDateOfBirth.Location = new System.Drawing.Point(510, 50);
-            this.dtpDateOfBirth.Name = "dtpDateOfBirth";
-            this.dtpDateOfBirth.Size = new System.Drawing.Size(200, 25);
-            this.dtpDateOfBirth.TabIndex = 11;
+            this.txtDesignation.Location = new System.Drawing.Point(510, 50);
+            this.txtDesignation.MaxLength = 50;
+            this.txtDesignation.Name = "txtDesignation";
+            this.txtDesignation.Size = new System.Drawing.Size(200, 25);
+            this.txtDesignation.TabIndex = 7;
             // 
-            // cmbGender
+            // txtEmail
             // 
-            this.cmbGender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbGender.FormattingEnabled = true;
-            this.cmbGender.Location = new System.Drawing.Point(510, 15);
-            this.cmbGender.Name = "cmbGender";
-            this.cmbGender.Size = new System.Drawing.Size(200, 25);
-            this.cmbGender.TabIndex = 10;
+            this.txtEmail.Location = new System.Drawing.Point(510, 15);
+            this.txtEmail.MaxLength = 100;
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(200, 25);
+            this.txtEmail.TabIndex = 6;
             // 
             // txtLastName
             // 
-            this.txtLastName.Location = new System.Drawing.Point(140, 85);
+            this.txtLastName.Location = new System.Drawing.Point(140, 50);
             this.txtLastName.MaxLength = 50;
             this.txtLastName.Name = "txtLastName";
             this.txtLastName.Size = new System.Drawing.Size(200, 25);
-            this.txtLastName.TabIndex = 9;
+            this.txtLastName.TabIndex = 5;
             // 
             // txtFirstName
             // 
-            this.txtFirstName.Location = new System.Drawing.Point(140, 50);
+            this.txtFirstName.Location = new System.Drawing.Point(140, 15);
             this.txtFirstName.MaxLength = 50;
             this.txtFirstName.Name = "txtFirstName";
             this.txtFirstName.Size = new System.Drawing.Size(200, 25);
-            this.txtFirstName.TabIndex = 8;
+            this.txtFirstName.TabIndex = 4;
             // 
-            // txtRegNo
+            // lblDesignation
             // 
-            this.txtRegNo.Location = new System.Drawing.Point(140, 15);
-            this.txtRegNo.MaxLength = 20;
-            this.txtRegNo.Name = "txtRegNo";
-            this.txtRegNo.Size = new System.Drawing.Size(200, 25);
-            this.txtRegNo.TabIndex = 7;
+            this.lblDesignation.AutoSize = true;
+            this.lblDesignation.Location = new System.Drawing.Point(400, 53);
+            this.lblDesignation.Name = "lblDesignation";
+            this.lblDesignation.Size = new System.Drawing.Size(79, 19);
+            this.lblDesignation.TabIndex = 3;
+            this.lblDesignation.Text = "Designation";
             // 
-            // lblGender
+            // lblEmail
             // 
-            this.lblGender.AutoSize = true;
-            this.lblGender.Location = new System.Drawing.Point(400, 18);
-            this.lblGender.Name = "lblGender";
-            this.lblGender.Size = new System.Drawing.Size(54, 19);
-            this.lblGender.TabIndex = 5;
-            this.lblGender.Text = "Gender";
-            // 
-            // lblDOB
-            // 
-            this.lblDOB.AutoSize = true;
-            this.lblDOB.Location = new System.Drawing.Point(400, 53);
-            this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(87, 19);
-            this.lblDOB.TabIndex = 4;
-            this.lblDOB.Text = "Date of Birth";
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.Location = new System.Drawing.Point(400, 18);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(41, 19);
+            this.lblEmail.TabIndex = 2;
+            this.lblEmail.Text = "Email";
             // 
             // lblLastName
             // 
             this.lblLastName.AutoSize = true;
-            this.lblLastName.Location = new System.Drawing.Point(20, 88);
+            this.lblLastName.Location = new System.Drawing.Point(20, 53);
             this.lblLastName.Name = "lblLastName";
             this.lblLastName.Size = new System.Drawing.Size(74, 19);
-            this.lblLastName.TabIndex = 3;
+            this.lblLastName.TabIndex = 1;
             this.lblLastName.Text = "Last Name";
             // 
             // lblFirstName
             // 
             this.lblFirstName.AutoSize = true;
-            this.lblFirstName.Location = new System.Drawing.Point(20, 53);
+            this.lblFirstName.Location = new System.Drawing.Point(20, 18);
             this.lblFirstName.Name = "lblFirstName";
             this.lblFirstName.Size = new System.Drawing.Size(75, 19);
-            this.lblFirstName.TabIndex = 2;
+            this.lblFirstName.TabIndex = 0;
             this.lblFirstName.Text = "First Name";
             // 
             // lblSearch
@@ -213,7 +191,7 @@
             this.lblSearch.Location = new System.Drawing.Point(20, 270);
             this.lblSearch.Name = "lblSearch";
             this.lblSearch.Size = new System.Drawing.Size(52, 19);
-            this.lblSearch.TabIndex = 6;
+            this.lblSearch.TabIndex = 3;
             this.lblSearch.Text = "Search:";
             // 
             // txtSearch
@@ -221,37 +199,36 @@
             this.txtSearch.Location = new System.Drawing.Point(80, 267);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(300, 25);
-            this.txtSearch.TabIndex = 7;
-            this.txtSearch.Text = "Search by name or registration no...";
+            this.txtSearch.TabIndex = 4;
             // 
-            // dgvStudents
+            // dgvTeachers
             // 
-            this.dgvStudents.AllowUserToAddRows = false;
-            this.dgvStudents.AllowUserToDeleteRows = false;
-            this.dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudents.Location = new System.Drawing.Point(20, 300);
-            this.dgvStudents.MultiSelect = false;
-            this.dgvStudents.Name = "dgvStudents";
-            this.dgvStudents.ReadOnly = true;
-            this.dgvStudents.Size = new System.Drawing.Size(800, 250);
-            this.dgvStudents.TabIndex = 8;
+            this.dgvTeachers.AllowUserToAddRows = false;
+            this.dgvTeachers.AllowUserToDeleteRows = false;
+            this.dgvTeachers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTeachers.Location = new System.Drawing.Point(20, 300);
+            this.dgvTeachers.MultiSelect = false;
+            this.dgvTeachers.Name = "dgvTeachers";
+            this.dgvTeachers.ReadOnly = true;
+            this.dgvTeachers.Size = new System.Drawing.Size(800, 250);
+            this.dgvTeachers.TabIndex = 5;
             // 
-            // StudentForm
+            // TeacherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(860, 600);
-            this.Controls.Add(this.dgvStudents);
+            this.Controls.Add(this.dgvTeachers);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.pnlInput);
             this.Controls.Add(this.lblFormTitle);
             this.Controls.Add(this.lblSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "StudentForm";
-            this.Text = "Students";
+            this.Name = "TeacherForm";
+            this.Text = "Teachers";
             this.pnlInput.ResumeLayout(false);
             this.pnlInput.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTeachers)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -260,23 +237,21 @@
         #endregion
 
         private System.Windows.Forms.Label lblFormTitle;
-        private System.Windows.Forms.Label lblRegNo;
         private System.Windows.Forms.Panel pnlInput;
         private System.Windows.Forms.Label lblSearch;
-        private System.Windows.Forms.Label lblGender;
-        private System.Windows.Forms.Label lblDOB;
+        private System.Windows.Forms.Label lblDesignation;
+        private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.Label lblLastName;
         private System.Windows.Forms.Label lblFirstName;
-        private System.Windows.Forms.TextBox txtRegNo;
         private System.Windows.Forms.TextBox txtFirstName;
         private System.Windows.Forms.TextBox txtLastName;
-        private System.Windows.Forms.DateTimePicker dtpDateOfBirth;
-        private System.Windows.Forms.ComboBox cmbGender;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.TextBox txtDesignation;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.DataGridView dgvStudents;
+        private System.Windows.Forms.DataGridView dgvTeachers;
     }
 }
