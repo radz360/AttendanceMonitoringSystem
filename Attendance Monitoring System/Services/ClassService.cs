@@ -119,6 +119,33 @@ namespace Attendance_Monitoring_System.Services
             }
         }
 
+        // ── Get Classes by Teacher ID ────────────────────────────
+        public List<ClassInfo> GetClassesByTeacherId(int teacherId)
+        {
+            List<ClassInfo> classes = new List<ClassInfo>();
+
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                using (MySqlCommand cmd = new MySqlCommand("sp_GetClassesByTeacherId", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_teacher_id", teacherId);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            classes.Add(MapClassInfo(reader));
+                        }
+                    }
+                }
+            }
+
+            return classes;
+        }
+
         // ── Search Classes ───────────────────────────────────────
         public List<ClassInfo> SearchClasses(string keyword)
         {

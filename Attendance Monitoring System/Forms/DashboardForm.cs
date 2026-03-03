@@ -59,8 +59,7 @@ namespace Attendance_Monitoring_System.Forms
 
             if (string.Equals(role, "Registrar", StringComparison.OrdinalIgnoreCase))
             {
-                // Registrar: hide Attendance, Remarks, User Management
-                btnNavAttendance.Visible = false;
+                // Registrar: hide Remarks, User Management
                 btnNavRemarks.Visible = false;
                 btnNavUsers.Visible = false;
             }
@@ -75,12 +74,13 @@ namespace Attendance_Monitoring_System.Forms
             }
             else if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
             {
-                // Student: only Dashboard, Schedule, Attendance, Remarks
+                // Student: only Dashboard, Schedule, Remarks
                 btnNavStudents.Visible = false;
                 btnNavTeachers.Visible = false;
                 btnNavSubjects.Visible = false;
                 btnNavClasses.Visible = false;
                 btnNavEnrollment.Visible = false;
+                btnNavAttendance.Visible = false;
                 btnNavUsers.Visible = false;
             }
 
@@ -266,7 +266,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavAttendance_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavAttendance);
-            // TODO: LoadFormInPanel(new AttendanceForm(_currentUser));
+            LoadFormInPanel(new AttendanceForm(_currentUser));
         }
 
         private void btnNavRemarks_Click(object sender, EventArgs e)
