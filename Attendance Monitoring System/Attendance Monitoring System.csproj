@@ -168,6 +168,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database\AMS DB.sql" />
     <Content Include="Database\AMS SP.sql" />
     <Content Include="Resources\icon_attendance.png" />
     <Content Include="Resources\icon_classes.png" />
