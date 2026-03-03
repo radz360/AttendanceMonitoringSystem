@@ -230,7 +230,7 @@ namespace Attendance_Monitoring_System.Forms
         private void btnNavStudents_Click(object sender, EventArgs e)
         {
             SetActiveButton(btnNavStudents);
-            // TODO: LoadFormInPanel(new StudentForm(_currentUser));
+            LoadFormInPanel(new StudentForm(_currentUser));
         }
 
         private void btnNavTeachers_Click(object sender, EventArgs e)

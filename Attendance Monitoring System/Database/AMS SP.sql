@@ -545,3 +545,20 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_GetStudentsByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT DISTINCT s.student_id, s.registration_no, s.first_name, s.last_name,
+           s.gender, s.date_of_birth
+    FROM students s
+    INNER JOIN enrollments e ON s.student_id = e.student_id
+    INNER JOIN classes c ON e.class_id = c.class_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY s.last_name, s.first_name;
+END //
+
+DELIMITER ;
