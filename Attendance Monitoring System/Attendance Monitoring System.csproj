@@ -263,5 +263,6 @@
     <Content Include="Resources\icon_subjects.png" />
     <Content Include="Resources\icon_teachers.png" />
     <Content Include="Resources\icon_users.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
