@@ -81,7 +81,7 @@ namespace Attendance_Monitoring_System.Forms
                 Name = "Status",
                 HeaderText = "Status"
             };
-            colStatus.Items.AddRange("Present", "Absent", "Late");
+            colStatus.Items.AddRange("Present", "Absent", "Late", "Excused");
             dgvAttendance.Columns.Add(colStatus);
 
             // Time In — editable text box

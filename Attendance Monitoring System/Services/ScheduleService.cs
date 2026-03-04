@@ -172,7 +172,10 @@ namespace Attendance_Monitoring_System.Services
                 DayOfWeek = reader.GetInt32("day_of_week"),
                 StartTime = reader.GetString("start_time"),
                 EndTime = reader.GetString("end_time"),
-                Room = reader.GetString("room")
+                Room = reader.GetString("room"),
+                SubjectCode = reader.GetString("subject_code"),
+                SubjectName = reader.GetString("subject_name"),
+                Section = reader.GetString("section")
             };
         }
     }
