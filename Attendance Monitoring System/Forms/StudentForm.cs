@@ -115,7 +115,7 @@ namespace Attendance_Monitoring_System.Forms
                 dgvStudents.Columns["LastName"].HeaderText = "Last Name";
                 dgvStudents.Columns["Gender"].HeaderText = "Gender";
                 dgvStudents.Columns["DateOfBirth"].HeaderText = "Date of Birth";
-                dgvStudents.Columns["DateOfBirth"].DefaultCellStyle.Format = "yyyy-MM-dd";
+                dgvStudents.Columns["DateOfBirth"].DefaultCellStyle.Format = "MM-dd-yyyy";
                 dgvStudents.Columns["FullName"].Visible = false;
             }
         }

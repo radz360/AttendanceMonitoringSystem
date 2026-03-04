@@ -9,7 +9,7 @@ namespace Attendance_Monitoring_System.Services
             "Port=3306;" +
             "Database=attendance_db;" +
             "Uid=root;" +
-            "Pwd=042006;";
+            "Pwd=root;";
 
         /// <summary>
         /// Returns a new MySqlConnection. 
