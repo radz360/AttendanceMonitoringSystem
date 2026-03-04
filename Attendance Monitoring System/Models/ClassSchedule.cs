@@ -12,6 +12,11 @@
         public string EndTime { get; set; }
         public string Room { get; set; }
 
+        // Subject/class info for Teacher/Student views
+        public string SubjectCode { get; set; }
+        public string SubjectName { get; set; }
+        public string Section { get; set; }
+
         // Convenience property for display
         public string DayName
         {

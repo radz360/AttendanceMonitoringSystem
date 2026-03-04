@@ -894,4 +894,39 @@ BEGIN
     ORDER BY r.remark_date DESC;
 END //
 
+-- ── SCHEDULES (Teacher / Student views) ──────────────────
+
+DROP PROCEDURE IF EXISTS sp_GetSchedulesByTeacherId //
+CREATE PROCEDURE sp_GetSchedulesByTeacherId(
+    IN p_teacher_id INT
+)
+BEGIN
+    SELECT cs.schedule_id, cs.class_id, cs.day_of_week,
+           cs.start_time, cs.end_time, cs.room,
+           s.subject_code, s.subject_name,
+           c.section
+    FROM class_schedule cs
+    INNER JOIN classes c ON cs.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE c.teacher_id = p_teacher_id
+    ORDER BY cs.day_of_week, cs.start_time;
+END //
+
+DROP PROCEDURE IF EXISTS sp_GetSchedulesByStudentId //
+CREATE PROCEDURE sp_GetSchedulesByStudentId(
+    IN p_student_id INT
+)
+BEGIN
+    SELECT cs.schedule_id, cs.class_id, cs.day_of_week,
+           cs.start_time, cs.end_time, cs.room,
+           s.subject_code, s.subject_name,
+           c.section
+    FROM class_schedule cs
+    INNER JOIN classes c ON cs.class_id = c.class_id
+    INNER JOIN subjects s ON c.subject_id = s.subject_id
+    INNER JOIN enrollments e ON c.class_id = e.class_id
+    WHERE e.student_id = p_student_id
+    ORDER BY cs.day_of_week, cs.start_time;
+END //
+
 DELIMITER ;

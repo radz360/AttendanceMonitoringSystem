@@ -218,6 +218,29 @@ namespace Attendance_Monitoring_System.Forms
                 dgvSchedules.Columns["StartTime"].HeaderText = "Start Time";
                 dgvSchedules.Columns["EndTime"].HeaderText = "End Time";
                 dgvSchedules.Columns["Room"].HeaderText = "Room";
+
+                // Show subject/section columns for Teacher/Student views
+                if (dgvSchedules.Columns.Contains("SubjectCode"))
+                {
+                    bool hasSubjectData = schedules.Count > 0 && schedules[0].SubjectCode != null;
+                    dgvSchedules.Columns["SubjectCode"].Visible = hasSubjectData;
+                    dgvSchedules.Columns["SubjectCode"].HeaderText = "Subject Code";
+                    dgvSchedules.Columns["SubjectCode"].DisplayIndex = 0;
+                }
+                if (dgvSchedules.Columns.Contains("SubjectName"))
+                {
+                    bool hasSubjectData = schedules.Count > 0 && schedules[0].SubjectName != null;
+                    dgvSchedules.Columns["SubjectName"].Visible = hasSubjectData;
+                    dgvSchedules.Columns["SubjectName"].HeaderText = "Subject";
+                    dgvSchedules.Columns["SubjectName"].DisplayIndex = 1;
+                }
+                if (dgvSchedules.Columns.Contains("Section"))
+                {
+                    bool hasSectionData = schedules.Count > 0 && schedules[0].Section != null;
+                    dgvSchedules.Columns["Section"].Visible = hasSectionData;
+                    dgvSchedules.Columns["Section"].HeaderText = "Section";
+                    dgvSchedules.Columns["Section"].DisplayIndex = 2;
+                }
             }
         }
 
