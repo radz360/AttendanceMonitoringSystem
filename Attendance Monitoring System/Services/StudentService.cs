@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,9 +16,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllStudents", conn))
+                string sql = @"SELECT student_id, registration_no, first_name, last_name, gender, date_of_birth
+                FROM students ORDER BY last_name, first_name";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -43,10 +43,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetStudentsByTeacherId", conn))
+                string sql = @"SELECT DISTINCT s.student_id, s.registration_no, s.first_name, s.last_name,
+                       s.gender, s.date_of_birth
+                FROM students s
+                INNER JOIN enrollments e ON s.student_id = e.student_id
+                INNER JOIN classes c ON e.class_id = c.class_id
+                WHERE c.teacher_id = @p_teacher_id
+                ORDER BY s.last_name, s.first_name";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_teacher_id", teacherId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", teacherId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -68,10 +74,11 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetStudentById", conn))
+                string sql = @"SELECT student_id, registration_no, first_name, last_name, gender, date_of_birth
+                FROM students WHERE student_id = @p_student_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_student_id", studentId);
+                    cmd.Parameters.AddWithValue("@p_student_id", studentId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -93,14 +100,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_AddStudent", conn))
+                string sql = @"INSERT INTO students (registration_no, first_name, last_name, gender, date_of_birth)
+                VALUES (@p_registration_no, @p_first_name, @p_last_name, @p_gender, @p_date_of_birth)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_registration_no", student.RegistrationNo);
-                    cmd.Parameters.AddWithValue("p_first_name", student.FirstName);
-                    cmd.Parameters.AddWithValue("p_last_name", student.LastName);
-                    cmd.Parameters.AddWithValue("p_gender", student.Gender);
-                    cmd.Parameters.AddWithValue("p_date_of_birth", student.DateOfBirth);
+                    cmd.Parameters.AddWithValue("@p_registration_no", student.RegistrationNo);
+                    cmd.Parameters.AddWithValue("@p_first_name", student.FirstName);
+                    cmd.Parameters.AddWithValue("@p_last_name", student.LastName);
+                    cmd.Parameters.AddWithValue("@p_gender", student.Gender);
+                    cmd.Parameters.AddWithValue("@p_date_of_birth", student.DateOfBirth);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -114,15 +122,21 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateStudent", conn))
+                string sql = @"UPDATE students
+                SET registration_no = @p_registration_no,
+                    first_name = @p_first_name,
+                    last_name = @p_last_name,
+                    gender = @p_gender,
+                    date_of_birth = @p_date_of_birth
+                WHERE student_id = @p_student_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_student_id", student.StudentId);
-                    cmd.Parameters.AddWithValue("p_registration_no", student.RegistrationNo);
-                    cmd.Parameters.AddWithValue("p_first_name", student.FirstName);
-                    cmd.Parameters.AddWithValue("p_last_name", student.LastName);
-                    cmd.Parameters.AddWithValue("p_gender", student.Gender);
-                    cmd.Parameters.AddWithValue("p_date_of_birth", student.DateOfBirth);
+                    cmd.Parameters.AddWithValue("@p_student_id", student.StudentId);
+                    cmd.Parameters.AddWithValue("@p_registration_no", student.RegistrationNo);
+                    cmd.Parameters.AddWithValue("@p_first_name", student.FirstName);
+                    cmd.Parameters.AddWithValue("@p_last_name", student.LastName);
+                    cmd.Parameters.AddWithValue("@p_gender", student.Gender);
+                    cmd.Parameters.AddWithValue("@p_date_of_birth", student.DateOfBirth);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -136,10 +150,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteStudent", conn))
+                string sql = "DELETE FROM students WHERE student_id = @p_student_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_student_id", studentId);
+                    cmd.Parameters.AddWithValue("@p_student_id", studentId);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -155,10 +169,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_SearchStudents", conn))
+                string sql = @"SELECT student_id, registration_no, first_name, last_name, gender, date_of_birth
+                FROM students
+                WHERE registration_no LIKE @kw
+                   OR first_name LIKE @kw
+                   OR last_name LIKE @kw
+                ORDER BY last_name, first_name";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_keyword", keyword);
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {

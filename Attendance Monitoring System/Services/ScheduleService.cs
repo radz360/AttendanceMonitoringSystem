@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,10 +16,13 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSchedulesByClassId", conn))
+                string sql = @"SELECT schedule_id, class_id, day_of_week, start_time, end_time, room
+                FROM class_schedule
+                WHERE class_id = @p_class_id
+                ORDER BY day_of_week, start_time";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", classId);
+                    cmd.Parameters.AddWithValue("@p_class_id", classId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -44,10 +46,18 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSchedulesByTeacherId", conn))
+                string sql = @"SELECT cs.schedule_id, cs.class_id, cs.day_of_week,
+                       cs.start_time, cs.end_time, cs.room,
+                       s.subject_code, s.subject_name,
+                       c.section
+                FROM class_schedule cs
+                INNER JOIN classes c ON cs.class_id = c.class_id
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                WHERE c.teacher_id = @p_teacher_id
+                ORDER BY cs.day_of_week, cs.start_time";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_teacher_id", teacherId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", teacherId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -71,10 +81,19 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSchedulesByStudentId", conn))
+                string sql = @"SELECT cs.schedule_id, cs.class_id, cs.day_of_week,
+                       cs.start_time, cs.end_time, cs.room,
+                       s.subject_code, s.subject_name,
+                       c.section
+                FROM class_schedule cs
+                INNER JOIN classes c ON cs.class_id = c.class_id
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                INNER JOIN enrollments e ON c.class_id = e.class_id
+                WHERE e.student_id = @p_student_id
+                ORDER BY cs.day_of_week, cs.start_time";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_student_id", studentId);
+                    cmd.Parameters.AddWithValue("@p_student_id", studentId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -96,14 +115,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_AddSchedule", conn))
+                string sql = @"INSERT INTO class_schedule (class_id, day_of_week, start_time, end_time, room)
+                VALUES (@p_class_id, @p_day_of_week, @p_start_time, @p_end_time, @p_room)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", schedule.ClassId);
-                    cmd.Parameters.AddWithValue("p_day_of_week", schedule.DayOfWeek);
-                    cmd.Parameters.AddWithValue("p_start_time", schedule.StartTime);
-                    cmd.Parameters.AddWithValue("p_end_time", schedule.EndTime);
-                    cmd.Parameters.AddWithValue("p_room", schedule.Room);
+                    cmd.Parameters.AddWithValue("@p_class_id", schedule.ClassId);
+                    cmd.Parameters.AddWithValue("@p_day_of_week", schedule.DayOfWeek);
+                    cmd.Parameters.AddWithValue("@p_start_time", schedule.StartTime);
+                    cmd.Parameters.AddWithValue("@p_end_time", schedule.EndTime);
+                    cmd.Parameters.AddWithValue("@p_room", schedule.Room);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -117,14 +137,19 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateSchedule", conn))
+                string sql = @"UPDATE class_schedule
+                SET day_of_week = @p_day_of_week,
+                    start_time = @p_start_time,
+                    end_time = @p_end_time,
+                    room = @p_room
+                WHERE schedule_id = @p_schedule_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_schedule_id", schedule.ScheduleId);
-                    cmd.Parameters.AddWithValue("p_day_of_week", schedule.DayOfWeek);
-                    cmd.Parameters.AddWithValue("p_start_time", schedule.StartTime);
-                    cmd.Parameters.AddWithValue("p_end_time", schedule.EndTime);
-                    cmd.Parameters.AddWithValue("p_room", schedule.Room);
+                    cmd.Parameters.AddWithValue("@p_schedule_id", schedule.ScheduleId);
+                    cmd.Parameters.AddWithValue("@p_day_of_week", schedule.DayOfWeek);
+                    cmd.Parameters.AddWithValue("@p_start_time", schedule.StartTime);
+                    cmd.Parameters.AddWithValue("@p_end_time", schedule.EndTime);
+                    cmd.Parameters.AddWithValue("@p_room", schedule.Room);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -138,17 +163,17 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteSchedule", conn))
+                string sql = "DELETE FROM class_schedule WHERE schedule_id = @p_schedule_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_schedule_id", scheduleId);
+                    cmd.Parameters.AddWithValue("@p_schedule_id", scheduleId);
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
-        // ── Helper: Map basic schedule (from sp_GetSchedulesByClassId) ──
+        // ── Helper: Map basic schedule (class schedules query) ──
         private ClassSchedule MapSchedule(MySqlDataReader reader)
         {
             return new ClassSchedule
@@ -162,7 +187,7 @@ namespace Attendance_Monitoring_System.Services
             };
         }
 
-        // ── Helper: Map schedule with subject info (Teacher/Student SPs) ──
+        // ── Helper: Map schedule with subject info (Teacher/Student queries) ──
         private ClassSchedule MapScheduleWithSubject(MySqlDataReader reader)
         {
             return new ClassSchedule

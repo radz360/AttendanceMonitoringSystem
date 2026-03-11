@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,10 +16,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSessionsByClassId", conn))
+                string sql = @"SELECT a.session_id, a.class_id, a.schedule_id, a.session_date,
+                       a.created_by_teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
+                FROM attendance_sessions a
+                INNER JOIN teachers t ON a.created_by_teacher_id = t.teacher_id
+                WHERE a.class_id = @p_class_id
+                ORDER BY a.session_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", classId);
+                    cmd.Parameters.AddWithValue("@p_class_id", classId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -42,14 +47,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_CreateAttendanceSession", conn))
+                string sql = @"INSERT INTO attendance_sessions (class_id, schedule_id, session_date, created_by_teacher_id)
+                VALUES (@p_class_id, @p_schedule_id, @p_session_date, @p_created_by_teacher_id);
+                SELECT LAST_INSERT_ID() AS session_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", session.ClassId);
-                    cmd.Parameters.AddWithValue("p_schedule_id",
+                    cmd.Parameters.AddWithValue("@p_class_id", session.ClassId);
+                    cmd.Parameters.AddWithValue("@p_schedule_id",
                         session.ScheduleId.HasValue ? (object)session.ScheduleId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_session_date", session.SessionDate);
-                    cmd.Parameters.AddWithValue("p_created_by_teacher_id", session.CreatedByTeacherId);
+                    cmd.Parameters.AddWithValue("@p_session_date", session.SessionDate);
+                    cmd.Parameters.AddWithValue("@p_created_by_teacher_id", session.CreatedByTeacherId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -69,10 +76,12 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteAttendanceSession", conn))
+                string sql = @"DELETE FROM remarks WHERE session_id = @p_session_id;
+                DELETE FROM attendance_records WHERE session_id = @p_session_id;
+                DELETE FROM attendance_sessions WHERE session_id = @p_session_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", sessionId);
+                    cmd.Parameters.AddWithValue("@p_session_id", sessionId);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -88,10 +97,21 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAttendanceRecords", conn))
+                string sql = @"SELECT ar.attendance_record_id AS record_id,
+                       ar.session_id,
+                       ar.student_id,
+                       s.registration_no,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       ast.status_name AS status,
+                       ar.time_in
+                FROM attendance_records ar
+                INNER JOIN students s ON ar.student_id = s.student_id
+                INNER JOIN attendance_status ast ON ar.status_id = ast.status_id
+                WHERE ar.session_id = @p_session_id
+                ORDER BY s.last_name, s.first_name";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", sessionId);
+                    cmd.Parameters.AddWithValue("@p_session_id", sessionId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -113,13 +133,20 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_SaveAttendanceRecord", conn))
+                string sql = @"INSERT INTO attendance_records (session_id, student_id, status_id, time_in, marked_at)
+                SELECT @p_session_id, @p_student_id, ast.status_id, @p_time_in, CURRENT_TIMESTAMP
+                FROM attendance_status ast
+                WHERE ast.status_name = @p_status
+                ON DUPLICATE KEY UPDATE
+                    status_id  = VALUES(status_id),
+                    time_in    = VALUES(time_in),
+                    marked_at  = CURRENT_TIMESTAMP";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", record.SessionId);
-                    cmd.Parameters.AddWithValue("p_student_id", record.StudentId);
-                    cmd.Parameters.AddWithValue("p_status", record.Status);
-                    cmd.Parameters.AddWithValue("p_time_in",
+                    cmd.Parameters.AddWithValue("@p_session_id", record.SessionId);
+                    cmd.Parameters.AddWithValue("@p_student_id", record.StudentId);
+                    cmd.Parameters.AddWithValue("@p_status", record.Status);
+                    cmd.Parameters.AddWithValue("@p_time_in",
                         record.TimeIn.HasValue ? (object)record.TimeIn.Value : DBNull.Value);
 
                     cmd.ExecuteNonQuery();
@@ -136,10 +163,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSessionsByTeacherId", conn))
+                string sql = @"SELECT a.session_id, a.class_id, a.schedule_id, a.session_date,
+                       a.created_by_teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
+                FROM attendance_sessions a
+                INNER JOIN teachers t ON a.created_by_teacher_id = t.teacher_id
+                WHERE a.created_by_teacher_id = @p_teacher_id
+                ORDER BY a.session_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_teacher_id", teacherId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", teacherId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {

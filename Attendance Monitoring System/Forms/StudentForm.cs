@@ -62,7 +62,7 @@ namespace Attendance_Monitoring_System.Forms
                 dgvStudents.Location = new Point(20, 90);
                 dgvStudents.Height = 460;
             }
-            // Admin and Registrar get full CRUD — no changes needed
+            // Admin and Registrar get full CRUD
         }
 
         // ── Load Students into DataGridView ──────────────────────

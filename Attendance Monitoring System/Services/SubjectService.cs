@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,9 +16,9 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllSubjects", conn))
+                string sql = "SELECT subject_id, subject_code, subject_name FROM subjects ORDER BY subject_code";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -41,10 +40,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetSubjectById", conn))
+                string sql = "SELECT subject_id, subject_code, subject_name FROM subjects WHERE subject_id = @p_subject_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_subject_id", subjectId);
+                    cmd.Parameters.AddWithValue("@p_subject_id", subjectId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -66,11 +65,11 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_AddSubject", conn))
+                string sql = "INSERT INTO subjects (subject_code, subject_name) VALUES (@p_subject_code, @p_subject_name)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_subject_code", subject.SubjectCode);
-                    cmd.Parameters.AddWithValue("p_subject_name", subject.SubjectName);
+                    cmd.Parameters.AddWithValue("@p_subject_code", subject.SubjectCode);
+                    cmd.Parameters.AddWithValue("@p_subject_name", subject.SubjectName);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -84,12 +83,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateSubject", conn))
+                string sql = @"UPDATE subjects
+                SET subject_code = @p_subject_code,
+                    subject_name = @p_subject_name
+                WHERE subject_id = @p_subject_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_subject_id", subject.SubjectId);
-                    cmd.Parameters.AddWithValue("p_subject_code", subject.SubjectCode);
-                    cmd.Parameters.AddWithValue("p_subject_name", subject.SubjectName);
+                    cmd.Parameters.AddWithValue("@p_subject_id", subject.SubjectId);
+                    cmd.Parameters.AddWithValue("@p_subject_code", subject.SubjectCode);
+                    cmd.Parameters.AddWithValue("@p_subject_name", subject.SubjectName);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -103,10 +105,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteSubject", conn))
+                string sql = "DELETE FROM subjects WHERE subject_id = @p_subject_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_subject_id", subjectId);
+                    cmd.Parameters.AddWithValue("@p_subject_id", subjectId);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -122,10 +124,14 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_SearchSubjects", conn))
+                string sql = @"SELECT subject_id, subject_code, subject_name
+                FROM subjects
+                WHERE subject_code LIKE @kw
+                   OR subject_name LIKE @kw
+                ORDER BY subject_code";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_keyword", keyword);
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
