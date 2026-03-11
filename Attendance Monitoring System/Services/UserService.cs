@@ -16,14 +16,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                string sql = @"SELECT u.user_id, u.username, u.role, u.teacher_id, u.student_id,
-                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
-                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
-                       u.is_active
-                FROM users u
-                LEFT JOIN teachers t ON u.teacher_id = t.teacher_id
-                LEFT JOIN students s ON u.student_id = s.student_id
-                ORDER BY u.username";
+                string sql = @"SELECT user_id, username, role, teacher_id, student_id,
+                       is_active, created_at
+                FROM users
+                ORDER BY username";
                 using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
 
@@ -50,8 +46,6 @@ namespace Attendance_Monitoring_System.Services
                 string sql = @"UPDATE users
                 SET username = @p_username,
                     role = @p_role,
-                    teacher_id = @p_teacher_id,
-                    student_id = @p_student_id,
                     is_active = @p_is_active
                 WHERE user_id = @p_user_id";
                 using (MySqlCommand cmd = new MySqlCommand(sql, conn))
@@ -59,10 +53,6 @@ namespace Attendance_Monitoring_System.Services
                     cmd.Parameters.AddWithValue("@p_user_id", user.UserId);
                     cmd.Parameters.AddWithValue("@p_username", user.Username);
                     cmd.Parameters.AddWithValue("@p_role", user.Role);
-                    cmd.Parameters.AddWithValue("@p_teacher_id",
-                        user.TeacherId.HasValue ? (object)user.TeacherId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@p_student_id",
-                        user.StudentId.HasValue ? (object)user.StudentId.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@p_is_active", user.IsActive ? 1 : 0);
 
                     cmd.ExecuteNonQuery();
@@ -104,13 +94,8 @@ namespace Attendance_Monitoring_System.Services
                 StudentId = reader.IsDBNull(reader.GetOrdinal("student_id"))
                     ? (int?)null
                     : reader.GetInt32("student_id"),
-                TeacherName = reader.IsDBNull(reader.GetOrdinal("teacher_name"))
-                    ? ""
-                    : reader.GetString("teacher_name"),
-                StudentName = reader.IsDBNull(reader.GetOrdinal("student_name"))
-                    ? ""
-                    : reader.GetString("student_name"),
-                IsActive = reader.GetInt32("is_active") == 1
+                IsActive = reader.GetInt32("is_active") == 1,
+                CreatedAt = reader.GetDateTime("created_at")
             };
         }
     }

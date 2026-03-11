@@ -42,15 +42,6 @@ namespace Attendance_Monitoring_System.Forms
                 return;
             }
 
-            // --- Length Validation ---
-            if (txtPassword.Text.Length < 8)
-            {
-                MessageBox.Show("Password must be at least 8 characters.",
-                    "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPassword.Focus();
-                return;
-            }
-
             try
             {
                 // --- Attempt Login ---

@@ -23,6 +23,7 @@ namespace Attendance_Monitoring_System.Forms
             cmbClass.SelectedIndexChanged += cmbClass_SelectedIndexChanged;
             cmbSession.SelectedIndexChanged += cmbSession_SelectedIndexChanged;
             btnNewSession.Click += btnNewSession_Click;
+            btnRenameSession.Click += btnRenameSession_Click;
             btnDeleteSession.Click += btnDeleteSession_Click;
             btnSave.Click += btnSave_Click;
         }
@@ -32,14 +33,38 @@ namespace Attendance_Monitoring_System.Forms
         {
             base.OnLoad(e);
 
-            // Style delete button red
+            // Style delete button red, rename button muted
             btnDeleteSession.BackColor = Color.FromArgb(192, 57, 43);
+            btnRenameSession.BackColor = Color.FromArgb(127, 140, 141);
+
+            // Save button distinct green
+            btnSave.BackColor = Color.FromArgb(39, 174, 96);
+            btnSave.Font = new Font(btnSave.Font.FontFamily, 10.5f, FontStyle.Bold);
 
             // Build the attendance grid columns
             SetupAttendanceGrid();
 
+            // Apply role-based restrictions
+            ApplyRolePermissions();
+
             // Load classes based on role
             LoadClassesComboBox();
+        }
+
+        // ── Role-Based Permissions ───────────────────────────────
+        private void ApplyRolePermissions()
+        {
+            string role = _currentUser.Role;
+
+            if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
+            {
+                // Student: read-only view
+                btnNewSession.Visible = false;
+                btnRenameSession.Visible = false;
+                btnDeleteSession.Visible = false;
+                btnSave.Visible = false;
+                lblSummary.Location = new Point(20, 508);
+            }
         }
 
         // ── Setup DataGridView Columns ───────────────────────────
@@ -59,37 +84,56 @@ namespace Attendance_Monitoring_System.Forms
                 Visible = false
             });
 
-            // Reg. No — read-only
-            dgvAttendance.Columns.Add(new DataGridViewTextBoxColumn
+            // Student ID (registration_no) — read-only
+            DataGridViewTextBoxColumn colStudentId = new DataGridViewTextBoxColumn
             {
-                Name = "RegistrationNo",
-                HeaderText = "Reg. No",
-                ReadOnly = true
-            });
+                Name = "StudentIdDisplay",
+                HeaderText = "Student ID",
+                ReadOnly = true,
+                FillWeight = 20
+            };
+            dgvAttendance.Columns.Add(colStudentId);
 
             // Student Name — read-only
-            dgvAttendance.Columns.Add(new DataGridViewTextBoxColumn
+            DataGridViewTextBoxColumn colName = new DataGridViewTextBoxColumn
             {
                 Name = "StudentName",
                 HeaderText = "Student Name",
-                ReadOnly = true
-            });
+                ReadOnly = true,
+                FillWeight = 30
+            };
+            dgvAttendance.Columns.Add(colName);
 
-            // Status — ComboBox column
+            // Status — ComboBox column with constrained width
             DataGridViewComboBoxColumn colStatus = new DataGridViewComboBoxColumn
             {
                 Name = "Status",
-                HeaderText = "Status"
+                HeaderText = "Status",
+                FillWeight = 15,
+                FlatStyle = FlatStyle.Flat
             };
             colStatus.Items.AddRange("Present", "Absent", "Late", "Excused");
             dgvAttendance.Columns.Add(colStatus);
 
-            // Time In — editable text box
-            dgvAttendance.Columns.Add(new DataGridViewTextBoxColumn
+            // Time In — editable text box (optional)
+            DataGridViewTextBoxColumn colTimeIn = new DataGridViewTextBoxColumn
             {
                 Name = "TimeIn",
-                HeaderText = "Time In"
-            });
+                HeaderText = "Time In (optional)",
+                FillWeight = 15
+            };
+            dgvAttendance.Columns.Add(colTimeIn);
+
+            // Marked At — read-only timestamp
+            DataGridViewTextBoxColumn colMarkedAt = new DataGridViewTextBoxColumn
+            {
+                Name = "MarkedAt",
+                HeaderText = "Last Saved",
+                ReadOnly = true,
+                FillWeight = 20,
+                DefaultCellStyle = { ForeColor = Color.Gray }
+            };
+            dgvAttendance.Columns.Add(colMarkedAt);
         }
 
         // ── Load Classes into ComboBox ───────────────────────────
@@ -156,7 +200,10 @@ namespace Attendance_Monitoring_System.Forms
                 if (cmbSession.Items.Count > 0)
                     cmbSession.SelectedIndex = 0;
                 else
+                {
                     dgvAttendance.Rows.Clear();
+                    UpdateSummary();
+                }
             }
             catch (Exception ex)
             {
@@ -187,19 +234,52 @@ namespace Attendance_Monitoring_System.Forms
                         ? rec.TimeIn.Value.ToString("HH:mm")
                         : string.Empty;
 
+                    string markedAtText = rec.MarkedAt.ToString("yyyy-MM-dd HH:mm");
+
                     dgvAttendance.Rows.Add(
                         rec.RecordId,
                         rec.StudentId,
                         rec.RegistrationNo,
                         rec.StudentName,
                         rec.Status,
-                        timeInText);
+                        timeInText,
+                        markedAtText);
                 }
+
+                UpdateSummary();
             }
             catch (Exception ex)
             {
                 ShowError("Failed to load attendance records:\n\n" + ex.Message);
             }
+        }
+
+        // ── Update Summary Counts ────────────────────────────────
+        private void UpdateSummary()
+        {
+            int present = 0, absent = 0, late = 0, excused = 0;
+
+            foreach (DataGridViewRow row in dgvAttendance.Rows)
+            {
+                string status = row.Cells["Status"].Value != null
+                    ? row.Cells["Status"].Value.ToString()
+                    : "";
+
+                switch (status)
+                {
+                    case "Present": present++; break;
+                    case "Absent": absent++; break;
+                    case "Late": late++; break;
+                    case "Excused": excused++; break;
+                }
+            }
+
+            int total = dgvAttendance.Rows.Count;
+            lblSummary.Text = "Total: " + total +
+                "   |   ✔ Present: " + present +
+                "   |   ✖ Absent: " + absent +
+                "   |   ⏰ Late: " + late +
+                "   |   📋 Excused: " + excused;
         }
 
         // ── New Session Button ───────────────────────────────────
@@ -234,7 +314,7 @@ namespace Attendance_Monitoring_System.Forms
                 AttendanceSession newSession = new AttendanceSession
                 {
                     ClassId = classId,
-                    ScheduleId = null,
+                    SessionName = null,
                     SessionDate = DateTime.Today,
                     CreatedByTeacherId = teacherId
                 };
@@ -260,7 +340,7 @@ namespace Attendance_Monitoring_System.Forms
                     _attendanceService.SaveAttendanceRecord(record);
                 }
 
-                ShowSuccess("Session created successfully with " + enrolled.Count + " student(s) marked Absent.");
+                ShowSuccess("Session created with " + enrolled.Count + " student(s) defaulted to Absent.\nUse 'Save All Changes' after updating statuses.");
 
                 // Reload sessions and select the new one
                 LoadSessionsComboBox();
@@ -293,6 +373,96 @@ namespace Attendance_Monitoring_System.Forms
             }
         }
 
+        // ── Rename Session Button ────────────────────────────────
+        private void btnRenameSession_Click(object sender, EventArgs e)
+        {
+            AttendanceSession selected = cmbSession.SelectedItem as AttendanceSession;
+            if (selected == null)
+            {
+                ShowWarning("Please select a session to rename.");
+                return;
+            }
+
+            string currentName = selected.SessionName ?? "";
+
+            using (Form dialog = new Form())
+            {
+                dialog.Text = "Rename Session";
+                dialog.Size = new Size(420, 170);
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.MaximizeBox = false;
+                dialog.MinimizeBox = false;
+
+                Label lbl = new Label
+                {
+                    Text = "Session name (leave blank for default):",
+                    Location = new Point(15, 15),
+                    AutoSize = true
+                };
+
+                TextBox txt = new TextBox
+                {
+                    Location = new Point(15, 40),
+                    Size = new Size(370, 25),
+                    Text = currentName,
+                    MaxLength = 100
+                };
+
+                Button btnOk = new Button
+                {
+                    Text = "OK",
+                    DialogResult = DialogResult.OK,
+                    Location = new Point(220, 80),
+                    Size = new Size(80, 30)
+                };
+
+                Button btnCancel = new Button
+                {
+                    Text = "Cancel",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new Point(305, 80),
+                    Size = new Size(80, 30)
+                };
+
+                dialog.Controls.Add(lbl);
+                dialog.Controls.Add(txt);
+                dialog.Controls.Add(btnOk);
+                dialog.Controls.Add(btnCancel);
+                dialog.AcceptButton = btnOk;
+                dialog.CancelButton = btnCancel;
+
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    try
+                    {
+                        string newName = txt.Text.Trim();
+                        _attendanceService.UpdateSessionName(selected.SessionId, newName);
+
+                        // Reload sessions — preserve selection
+                        int selectedSessionId = selected.SessionId;
+                        LoadSessionsComboBox();
+
+                        for (int i = 0; i < cmbSession.Items.Count; i++)
+                        {
+                            AttendanceSession s = cmbSession.Items[i] as AttendanceSession;
+                            if (s != null && s.SessionId == selectedSessionId)
+                            {
+                                cmbSession.SelectedIndex = i;
+                                break;
+                            }
+                        }
+
+                        ShowSuccess("Session renamed successfully.");
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("Failed to rename session:\n\n" + ex.Message);
+                    }
+                }
+            }
+        }
+
         // ── Delete Session Button ────────────────────────────────
         private void btnDeleteSession_Click(object sender, EventArgs e)
         {
@@ -303,8 +473,7 @@ namespace Attendance_Monitoring_System.Forms
                 return;
             }
 
-            if (!ConfirmDelete("session #" + selected.SessionId +
-                               " (" + selected.SessionDate.ToShortDateString() + ")"))
+            if (!ConfirmDelete("session \"" + selected.ToString() + "\""))
                 return;
 
             try
@@ -313,6 +482,7 @@ namespace Attendance_Monitoring_System.Forms
                 ShowSuccess("Session deleted successfully.");
                 LoadSessionsComboBox();
                 dgvAttendance.Rows.Clear();
+                UpdateSummary();
             }
             catch (Exception ex)
             {
@@ -357,6 +527,11 @@ namespace Attendance_Monitoring_System.Forms
                         DateTime parsed;
                         if (DateTime.TryParse(timeInText, out parsed))
                             timeIn = parsed;
+                        else if (DateTime.TryParseExact(timeInText,
+                            new[] { "HH:mm", "H:mm", "h:mm tt", "hh:mm tt" },
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            System.Globalization.DateTimeStyles.None, out parsed))
+                            timeIn = parsed;
                     }
 
                     AttendanceRecord record = new AttendanceRecord
@@ -371,7 +546,10 @@ namespace Attendance_Monitoring_System.Forms
                     savedCount++;
                 }
 
-                ShowSuccess("Attendance saved for " + savedCount + " student(s).");
+                ShowSuccess("Saved " + savedCount + " record(s) to the database.");
+
+                // Reload to show updated "Last Saved" timestamps
+                LoadAttendanceRecords(selected.SessionId);
             }
             catch (Exception ex)
             {

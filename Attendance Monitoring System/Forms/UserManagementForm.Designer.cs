@@ -34,15 +34,10 @@ namespace Attendance_Monitoring_System.Forms
             this.btnResetPassword = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
-            this.lblInfo = new System.Windows.Forms.Label();
             this.chkActive = new System.Windows.Forms.CheckBox();
-            this.cmbStudent = new System.Windows.Forms.ComboBox();
-            this.cmbTeacher = new System.Windows.Forms.ComboBox();
             this.cmbRole = new System.Windows.Forms.ComboBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtUsername = new System.Windows.Forms.TextBox();
-            this.lblStudent = new System.Windows.Forms.Label();
-            this.lblTeacher = new System.Windows.Forms.Label();
             this.lblRole = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
@@ -60,7 +55,7 @@ namespace Attendance_Monitoring_System.Forms
             this.lblFormTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.lblFormTitle.Location = new System.Drawing.Point(20, 15);
             this.lblFormTitle.Name = "lblFormTitle";
-            this.lblFormTitle.Size = new System.Drawing.Size(202, 30);
+            this.lblFormTitle.Size = new System.Drawing.Size(192, 30);
             this.lblFormTitle.TabIndex = 0;
             this.lblFormTitle.Text = "User Management";
             // 
@@ -72,26 +67,21 @@ namespace Attendance_Monitoring_System.Forms
             this.pnlInput.Controls.Add(this.btnResetPassword);
             this.pnlInput.Controls.Add(this.btnUpdate);
             this.pnlInput.Controls.Add(this.btnCreate);
-            this.pnlInput.Controls.Add(this.lblInfo);
             this.pnlInput.Controls.Add(this.chkActive);
-            this.pnlInput.Controls.Add(this.cmbStudent);
-            this.pnlInput.Controls.Add(this.cmbTeacher);
             this.pnlInput.Controls.Add(this.cmbRole);
             this.pnlInput.Controls.Add(this.txtPassword);
             this.pnlInput.Controls.Add(this.txtUsername);
-            this.pnlInput.Controls.Add(this.lblStudent);
-            this.pnlInput.Controls.Add(this.lblTeacher);
             this.pnlInput.Controls.Add(this.lblRole);
             this.pnlInput.Controls.Add(this.lblPassword);
             this.pnlInput.Controls.Add(this.lblUsername);
             this.pnlInput.Location = new System.Drawing.Point(20, 50);
             this.pnlInput.Name = "pnlInput";
-            this.pnlInput.Size = new System.Drawing.Size(800, 240);
+            this.pnlInput.Size = new System.Drawing.Size(800, 200);
             this.pnlInput.TabIndex = 1;
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(470, 190);
+            this.btnClear.Location = new System.Drawing.Point(470, 150);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(100, 35);
             this.btnClear.TabIndex = 16;
@@ -100,7 +90,7 @@ namespace Attendance_Monitoring_System.Forms
             // 
             // btnResetPassword
             // 
-            this.btnResetPassword.Location = new System.Drawing.Point(340, 190);
+            this.btnResetPassword.Location = new System.Drawing.Point(340, 150);
             this.btnResetPassword.Name = "btnResetPassword";
             this.btnResetPassword.Size = new System.Drawing.Size(120, 35);
             this.btnResetPassword.TabIndex = 15;
@@ -109,7 +99,7 @@ namespace Attendance_Monitoring_System.Forms
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(230, 190);
+            this.btnUpdate.Location = new System.Drawing.Point(230, 150);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(100, 35);
             this.btnUpdate.TabIndex = 14;
@@ -118,52 +108,24 @@ namespace Attendance_Monitoring_System.Forms
             // 
             // btnCreate
             // 
-            this.btnCreate.Location = new System.Drawing.Point(110, 190);
+            this.btnCreate.Location = new System.Drawing.Point(110, 150);
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Size = new System.Drawing.Size(110, 35);
             this.btnCreate.TabIndex = 13;
             this.btnCreate.Text = "Create User";
             this.btnCreate.UseVisualStyleBackColor = true;
             // 
-            // lblInfo
-            // 
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.ForeColor = System.Drawing.Color.Gray;
-            this.lblInfo.Location = new System.Drawing.Point(110, 148);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(507, 19);
-            this.lblInfo.TabIndex = 12;
-            this.lblInfo.Text = "Password must be at least 8 characters. Link a Teacher or Student based on the role.";
-            // 
             // chkActive
             // 
             this.chkActive.AutoSize = true;
             this.chkActive.Checked = true;
             this.chkActive.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkActive.Location = new System.Drawing.Point(110, 120);
+            this.chkActive.Location = new System.Drawing.Point(110, 85);
             this.chkActive.Name = "chkActive";
-            this.chkActive.Size = new System.Drawing.Size(67, 23);
+            this.chkActive.Size = new System.Drawing.Size(65, 23);
             this.chkActive.TabIndex = 11;
             this.chkActive.Text = "Active";
             this.chkActive.UseVisualStyleBackColor = true;
-            // 
-            // cmbStudent
-            // 
-            this.cmbStudent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbStudent.FormattingEnabled = true;
-            this.cmbStudent.Location = new System.Drawing.Point(480, 85);
-            this.cmbStudent.Name = "cmbStudent";
-            this.cmbStudent.Size = new System.Drawing.Size(250, 25);
-            this.cmbStudent.TabIndex = 10;
-            // 
-            // cmbTeacher
-            // 
-            this.cmbTeacher.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTeacher.FormattingEnabled = true;
-            this.cmbTeacher.Location = new System.Drawing.Point(110, 85);
-            this.cmbTeacher.Name = "cmbTeacher";
-            this.cmbTeacher.Size = new System.Drawing.Size(250, 25);
-            this.cmbTeacher.TabIndex = 9;
             // 
             // cmbRole
             // 
@@ -196,30 +158,12 @@ namespace Attendance_Monitoring_System.Forms
             this.txtUsername.Size = new System.Drawing.Size(250, 25);
             this.txtUsername.TabIndex = 6;
             // 
-            // lblStudent
-            // 
-            this.lblStudent.AutoSize = true;
-            this.lblStudent.Location = new System.Drawing.Point(400, 88);
-            this.lblStudent.Name = "lblStudent";
-            this.lblStudent.Size = new System.Drawing.Size(80, 19);
-            this.lblStudent.TabIndex = 4;
-            this.lblStudent.Text = "Link Student";
-            // 
-            // lblTeacher
-            // 
-            this.lblTeacher.AutoSize = true;
-            this.lblTeacher.Location = new System.Drawing.Point(20, 88);
-            this.lblTeacher.Name = "lblTeacher";
-            this.lblTeacher.Size = new System.Drawing.Size(82, 19);
-            this.lblTeacher.TabIndex = 3;
-            this.lblTeacher.Text = "Link Teacher";
-            // 
             // lblRole
             // 
             this.lblRole.AutoSize = true;
             this.lblRole.Location = new System.Drawing.Point(20, 53);
             this.lblRole.Name = "lblRole";
-            this.lblRole.Size = new System.Drawing.Size(34, 19);
+            this.lblRole.Size = new System.Drawing.Size(35, 19);
             this.lblRole.TabIndex = 2;
             this.lblRole.Text = "Role";
             // 
@@ -228,7 +172,7 @@ namespace Attendance_Monitoring_System.Forms
             this.lblPassword.AutoSize = true;
             this.lblPassword.Location = new System.Drawing.Point(400, 18);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(64, 19);
+            this.lblPassword.Size = new System.Drawing.Size(67, 19);
             this.lblPassword.TabIndex = 1;
             this.lblPassword.Text = "Password";
             // 
@@ -237,14 +181,14 @@ namespace Attendance_Monitoring_System.Forms
             this.lblUsername.AutoSize = true;
             this.lblUsername.Location = new System.Drawing.Point(20, 18);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(68, 19);
+            this.lblUsername.Size = new System.Drawing.Size(71, 19);
             this.lblUsername.TabIndex = 0;
             this.lblUsername.Text = "Username";
             // 
             // lblSearch
             // 
             this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(20, 305);
+            this.lblSearch.Location = new System.Drawing.Point(20, 265);
             this.lblSearch.Name = "lblSearch";
             this.lblSearch.Size = new System.Drawing.Size(52, 19);
             this.lblSearch.TabIndex = 2;
@@ -252,7 +196,7 @@ namespace Attendance_Monitoring_System.Forms
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(80, 302);
+            this.txtSearch.Location = new System.Drawing.Point(80, 262);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(300, 25);
             this.txtSearch.TabIndex = 3;
@@ -262,12 +206,12 @@ namespace Attendance_Monitoring_System.Forms
             this.dgvUsers.AllowUserToAddRows = false;
             this.dgvUsers.AllowUserToDeleteRows = false;
             this.dgvUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvUsers.Location = new System.Drawing.Point(20, 335);
+            this.dgvUsers.Location = new System.Drawing.Point(20, 295);
             this.dgvUsers.MultiSelect = false;
             this.dgvUsers.Name = "dgvUsers";
             this.dgvUsers.ReadOnly = true;
             this.dgvUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvUsers.Size = new System.Drawing.Size(800, 225);
+            this.dgvUsers.Size = new System.Drawing.Size(800, 265);
             this.dgvUsers.TabIndex = 4;
             // 
             // UserManagementForm
@@ -298,15 +242,10 @@ namespace Attendance_Monitoring_System.Forms
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.Label lblRole;
-        private System.Windows.Forms.Label lblTeacher;
-        private System.Windows.Forms.Label lblStudent;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.ComboBox cmbRole;
-        private System.Windows.Forms.ComboBox cmbTeacher;
-        private System.Windows.Forms.ComboBox cmbStudent;
         private System.Windows.Forms.CheckBox chkActive;
-        private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.Button btnCreate;
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnResetPassword;

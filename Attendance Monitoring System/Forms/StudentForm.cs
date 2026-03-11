@@ -11,6 +11,7 @@ namespace Attendance_Monitoring_System.Forms
     {
         private readonly User _currentUser;
         private readonly StudentService _studentService = new StudentService();
+        private readonly AuthService _authService = new AuthService();
         private int _selectedStudentId = -1;
 
         public StudentForm(User currentUser)
@@ -38,6 +39,11 @@ namespace Attendance_Monitoring_System.Forms
 
             // Style delete button red
             btnDelete.BackColor = Color.FromArgb(192, 57, 43);
+
+            // Student ID (txtRegNo) is auto-generated — make read-only
+            txtRegNo.ReadOnly = true;
+            txtRegNo.BackColor = Color.FromArgb(235, 235, 235);
+            txtRegNo.Text = "(auto-generated)";
 
             // Apply role-based restrictions
             ApplyRolePermissions();
@@ -106,11 +112,11 @@ namespace Attendance_Monitoring_System.Forms
 
             if (dgvStudents.Columns.Count > 0)
             {
-                // Hide the StudentId column — internal use only
+                // Hide the internal StudentId column
                 dgvStudents.Columns["StudentId"].Visible = false;
 
                 // Set friendly header names
-                dgvStudents.Columns["RegistrationNo"].HeaderText = "Registration No";
+                dgvStudents.Columns["RegistrationNo"].HeaderText = "Student ID";
                 dgvStudents.Columns["FirstName"].HeaderText = "First Name";
                 dgvStudents.Columns["LastName"].HeaderText = "Last Name";
                 dgvStudents.Columns["Gender"].HeaderText = "Gender";
@@ -142,17 +148,32 @@ namespace Attendance_Monitoring_System.Forms
 
             try
             {
+                // Auto-generate student ID
+                string regNo = _studentService.GenerateRegistrationNo();
+
                 Student student = new Student
                 {
-                    RegistrationNo = txtRegNo.Text.Trim(),
+                    RegistrationNo = regNo,
                     FirstName = txtFirstName.Text.Trim(),
                     LastName = txtLastName.Text.Trim(),
                     Gender = cmbGender.SelectedItem.ToString(),
                     DateOfBirth = dtpDateOfBirth.Value.Date
                 };
 
-                _studentService.AddStudent(student);
-                ShowSuccess("Student added successfully.");
+                int newStudentId = _studentService.AddStudent(student);
+
+                // Auto-create user account: username = student ID, password = lastname + birthdate
+                string username = regNo;
+                string password = student.LastName.ToLower() + student.DateOfBirth.ToString("MMddyyyy");
+
+                _authService.CreateUser(username, password, "Student", null, newStudentId);
+
+                ShowSuccess("Student registered successfully.\n\n" +
+                    "Student ID: " + regNo + "\n" +
+                    "Account created automatically.\n" +
+                    "Username: " + username + "\n" +
+                    "Password: " + student.LastName.ToLower() + " + birthdate (MMddyyyy)");
+
                 ClearFields();
                 LoadStudents();
             }
@@ -160,7 +181,7 @@ namespace Attendance_Monitoring_System.Forms
             {
                 if (ex.Number == 1062) // Duplicate entry
                 {
-                    ShowWarning("A student with this registration number already exists.");
+                    ShowWarning("A student with this ID already exists. Please try again.");
                 }
                 else
                 {
@@ -189,7 +210,6 @@ namespace Attendance_Monitoring_System.Forms
                 Student student = new Student
                 {
                     StudentId = _selectedStudentId,
-                    RegistrationNo = txtRegNo.Text.Trim(),
                     FirstName = txtFirstName.Text.Trim(),
                     LastName = txtLastName.Text.Trim(),
                     Gender = cmbGender.SelectedItem.ToString(),
@@ -200,17 +220,6 @@ namespace Attendance_Monitoring_System.Forms
                 ShowSuccess("Student updated successfully.");
                 ClearFields();
                 LoadStudents();
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                if (ex.Number == 1062)
-                {
-                    ShowWarning("A student with this registration number already exists.");
-                }
-                else
-                {
-                    ShowError("Database error:\n\n" + ex.Message);
-                }
             }
             catch (Exception ex)
             {
@@ -262,12 +271,12 @@ namespace Attendance_Monitoring_System.Forms
         private void ClearFields()
         {
             _selectedStudentId = -1;
-            txtRegNo.Clear();
+            txtRegNo.Text = "(auto-generated)";
             txtFirstName.Clear();
             txtLastName.Clear();
             cmbGender.SelectedIndex = 0;
             dtpDateOfBirth.Value = DateTime.Today;
-            txtRegNo.Focus();
+            txtFirstName.Focus();
 
             // Deselect any row in the grid
             dgvStudents.ClearSelection();
@@ -335,13 +344,6 @@ namespace Attendance_Monitoring_System.Forms
         // ── Input Validation ─────────────────────────────────────
         private bool ValidateInput()
         {
-            if (string.IsNullOrWhiteSpace(txtRegNo.Text))
-            {
-                ShowWarning("Please enter a registration number.");
-                txtRegNo.Focus();
-                return false;
-            }
-
             if (string.IsNullOrWhiteSpace(txtFirstName.Text))
             {
                 ShowWarning("Please enter a first name.");

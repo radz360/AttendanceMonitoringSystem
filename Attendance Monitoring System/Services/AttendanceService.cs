@@ -16,7 +16,7 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                string sql = @"SELECT a.session_id, a.class_id, a.schedule_id, a.session_date,
+                string sql = @"SELECT a.session_id, a.class_id, a.session_name, a.session_date,
                        a.created_by_teacher_id,
                        CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
                 FROM attendance_sessions a
@@ -47,14 +47,14 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                string sql = @"INSERT INTO attendance_sessions (class_id, schedule_id, session_date, created_by_teacher_id)
-                VALUES (@p_class_id, @p_schedule_id, @p_session_date, @p_created_by_teacher_id);
+                string sql = @"INSERT INTO attendance_sessions (class_id, session_name, session_date, created_by_teacher_id)
+                VALUES (@p_class_id, @p_session_name, @p_session_date, @p_created_by_teacher_id);
                 SELECT LAST_INSERT_ID() AS session_id";
                 using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@p_class_id", session.ClassId);
-                    cmd.Parameters.AddWithValue("@p_schedule_id",
-                        session.ScheduleId.HasValue ? (object)session.ScheduleId.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@p_session_name",
+                        string.IsNullOrWhiteSpace(session.SessionName) ? (object)DBNull.Value : session.SessionName);
                     cmd.Parameters.AddWithValue("@p_session_date", session.SessionDate);
                     cmd.Parameters.AddWithValue("@p_created_by_teacher_id", session.CreatedByTeacherId);
 
@@ -103,7 +103,8 @@ namespace Attendance_Monitoring_System.Services
                        s.registration_no,
                        CONCAT(s.first_name, ' ', s.last_name) AS student_name,
                        ast.status_name AS status,
-                       ar.time_in
+                       ar.time_in,
+                       ar.marked_at
                 FROM attendance_records ar
                 INNER JOIN students s ON ar.student_id = s.student_id
                 INNER JOIN attendance_status ast ON ar.status_id = ast.status_id
@@ -163,7 +164,7 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                string sql = @"SELECT a.session_id, a.class_id, a.schedule_id, a.session_date,
+                string sql = @"SELECT a.session_id, a.class_id, a.session_name, a.session_date,
                        a.created_by_teacher_id,
                        CONCAT(t.first_name, ' ', t.last_name) AS teacher_name
                 FROM attendance_sessions a
@@ -187,6 +188,25 @@ namespace Attendance_Monitoring_System.Services
             return sessions;
         }
 
+        // ── Update Session Name ──────────────────────────────────
+        public void UpdateSessionName(int sessionId, string sessionName)
+        {
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string sql = "UPDATE attendance_sessions SET session_name = @p_name WHERE session_id = @p_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@p_id", sessionId);
+                    cmd.Parameters.AddWithValue("@p_name",
+                        string.IsNullOrWhiteSpace(sessionName) ? (object)DBNull.Value : sessionName);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         // ── Helper: Map reader row to AttendanceSession ──────────
         private AttendanceSession MapSession(MySqlDataReader reader)
         {
@@ -194,9 +214,9 @@ namespace Attendance_Monitoring_System.Services
             {
                 SessionId = reader.GetInt32("session_id"),
                 ClassId = reader.GetInt32("class_id"),
-                ScheduleId = reader.IsDBNull(reader.GetOrdinal("schedule_id"))
-                    ? (int?)null
-                    : reader.GetInt32("schedule_id"),
+                SessionName = reader.IsDBNull(reader.GetOrdinal("session_name"))
+                    ? null
+                    : reader.GetString("session_name"),
                 SessionDate = reader.GetDateTime("session_date"),
                 CreatedByTeacherId = reader.GetInt32("created_by_teacher_id"),
                 TeacherName = reader.GetString("teacher_name")
@@ -216,7 +236,8 @@ namespace Attendance_Monitoring_System.Services
                 Status = reader.GetString("status"),
                 TimeIn = reader.IsDBNull(reader.GetOrdinal("time_in"))
                     ? (DateTime?)null
-                    : reader.GetDateTime("time_in")
+                    : reader.GetDateTime("time_in"),
+                MarkedAt = reader.GetDateTime("marked_at")
             };
         }
     }

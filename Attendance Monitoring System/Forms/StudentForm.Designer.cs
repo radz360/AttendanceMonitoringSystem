@@ -67,9 +67,9 @@
             this.lblRegNo.AutoSize = true;
             this.lblRegNo.Location = new System.Drawing.Point(20, 18);
             this.lblRegNo.Name = "lblRegNo";
-            this.lblRegNo.Size = new System.Drawing.Size(104, 19);
+            this.lblRegNo.Size = new System.Drawing.Size(74, 19);
             this.lblRegNo.TabIndex = 1;
-            this.lblRegNo.Text = "Registration No";
+            this.lblRegNo.Text = "Student ID";
             // 
             // pnlInput
             // 
@@ -222,7 +222,7 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(300, 25);
             this.txtSearch.TabIndex = 7;
-            this.txtSearch.Text = "Search by name or registration no...";
+            this.txtSearch.Text = "Search by name or student ID...";
             // 
             // dgvStudents
             // 

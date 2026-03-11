@@ -172,7 +172,6 @@
     <Compile Include="Models\AttendanceSession.cs" />
     <Compile Include="Models\ClassInfo.cs" />
     <Compile Include="Models\ClassSchedule.cs" />
-    <Compile Include="Models\Enrollment.cs" />
     <Compile Include="Models\Remark.cs" />
     <Compile Include="Models\RemarkCategory.cs" />
     <Compile Include="Models\SessionStudentItem.cs" />
@@ -252,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\AMS DB.sql" />
+    <Content Include="Database\AMS Seed Data.sql" />
     <Content Include="Resources\icon_attendance.png" />
     <Content Include="Resources\icon_classes.png" />
     <Content Include="Resources\icon_dashboard.png" />

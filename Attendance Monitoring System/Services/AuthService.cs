@@ -66,7 +66,8 @@ namespace Attendance_Monitoring_System.Services
         }
 
         /// <summary>
-        /// Creates a new user account. Only called by Admin from UserManagementForm.
+        /// Creates a new user account. Called by Admin from UserManagementForm
+        /// and automatically from StudentForm when registering a student.
         /// Hashes the password with BCrypt before storing.
         /// </summary>
         public void CreateUser(string username, string plainPassword, string role, int? teacherId, int? studentId)

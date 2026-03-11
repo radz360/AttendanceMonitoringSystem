@@ -59,7 +59,7 @@ namespace Attendance_Monitoring_System.Forms
 
             if (string.Equals(role, "Registrar", StringComparison.OrdinalIgnoreCase))
             {
-                // Registrar: hide Remarks, User Management
+                // Registrar: can manage Students, but not Remarks or User Management
                 btnNavRemarks.Visible = false;
                 btnNavUsers.Visible = false;
             }

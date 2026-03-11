@@ -210,7 +210,7 @@ namespace Attendance_Monitoring_System.Forms
                     sessionItems.Add(new SessionDisplayItem
                     {
                         SessionId = s.SessionId,
-                        DisplayText = s.SessionDate.ToString("yyyy-MM-dd") + " (by " + s.TeacherName + ")"
+                        DisplayText = s.ToString() + " (by " + s.TeacherName + ")"
                     });
                 }
 
@@ -324,6 +324,12 @@ namespace Attendance_Monitoring_System.Forms
         {
             if (!ValidateInput()) return;
 
+            if (!_currentUser.TeacherId.HasValue || _currentUser.TeacherId.Value == 0)
+            {
+                ShowError("Cannot add remarks — your account is not linked to a teacher record.");
+                return;
+            }
+
             try
             {
                 int categoryId = (int)cmbCategory.SelectedValue;
@@ -332,7 +338,7 @@ namespace Attendance_Monitoring_System.Forms
                 {
                     SessionId = (int)cmbSession.SelectedValue,
                     StudentId = (int)cmbStudent.SelectedValue,
-                    TeacherId = _currentUser.TeacherId.HasValue ? _currentUser.TeacherId.Value : 0,
+                    TeacherId = _currentUser.TeacherId.Value,
                     CategoryId = categoryId == 0 ? (int?)null : categoryId,
                     RemarkText = txtRemarkText.Text.Trim()
                 };

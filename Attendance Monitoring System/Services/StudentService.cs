@@ -93,15 +93,45 @@ namespace Attendance_Monitoring_System.Services
             return null;
         }
 
-        // ── Add Student ──────────────────────────────────────────
-        public void AddStudent(Student student)
+        // ── Generate Next Registration No (YYYY-NNNN) ───────────
+        public string GenerateRegistrationNo()
+        {
+            string year = DateTime.Now.Year.ToString();
+            string prefix = year + "-";
+
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // Use MAX to find the highest existing number for the current year,
+                // so deletions don't cause duplicate IDs.
+                string sql = @"SELECT MAX(CAST(SUBSTRING(registration_no, @p_len) AS UNSIGNED))
+                FROM students
+                WHERE registration_no LIKE @p_prefix";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@p_prefix", prefix + "%");
+                    cmd.Parameters.AddWithValue("@p_len", prefix.Length + 1); // position after 'YYYY-'
+
+                    object result = cmd.ExecuteScalar();
+                    int maxNumber = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : 0;
+                    int nextNumber = maxNumber + 1;
+
+                    return prefix + nextNumber.ToString("D4");
+                }
+            }
+        }
+
+        // ── Add Student — returns the new student_id ─────────────
+        public int AddStudent(Student student)
         {
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
                 string sql = @"INSERT INTO students (registration_no, first_name, last_name, gender, date_of_birth)
-                VALUES (@p_registration_no, @p_first_name, @p_last_name, @p_gender, @p_date_of_birth)";
+                VALUES (@p_registration_no, @p_first_name, @p_last_name, @p_gender, @p_date_of_birth);
+                SELECT LAST_INSERT_ID()";
                 using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@p_registration_no", student.RegistrationNo);
@@ -110,7 +140,8 @@ namespace Attendance_Monitoring_System.Services
                     cmd.Parameters.AddWithValue("@p_gender", student.Gender);
                     cmd.Parameters.AddWithValue("@p_date_of_birth", student.DateOfBirth);
 
-                    cmd.ExecuteNonQuery();
+                    object result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
                 }
             }
         }
@@ -123,8 +154,7 @@ namespace Attendance_Monitoring_System.Services
                 conn.Open();
 
                 string sql = @"UPDATE students
-                SET registration_no = @p_registration_no,
-                    first_name = @p_first_name,
+                SET first_name = @p_first_name,
                     last_name = @p_last_name,
                     gender = @p_gender,
                     date_of_birth = @p_date_of_birth
@@ -132,7 +162,6 @@ namespace Attendance_Monitoring_System.Services
                 using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@p_student_id", student.StudentId);
-                    cmd.Parameters.AddWithValue("@p_registration_no", student.RegistrationNo);
                     cmd.Parameters.AddWithValue("@p_first_name", student.FirstName);
                     cmd.Parameters.AddWithValue("@p_last_name", student.LastName);
                     cmd.Parameters.AddWithValue("@p_gender", student.Gender);

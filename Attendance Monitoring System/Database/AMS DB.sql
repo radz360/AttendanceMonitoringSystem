@@ -61,11 +61,10 @@ CREATE TABLE enrollments (
 CREATE TABLE attendance_sessions (
   session_id INT AUTO_INCREMENT PRIMARY KEY,
   class_id INT NOT NULL,
-  schedule_id INT NULL,
+  session_name VARCHAR(100) NULL,
   session_date DATE NOT NULL,
   created_by_teacher_id INT NOT NULL,
   FOREIGN KEY (class_id) REFERENCES classes(class_id),
-  FOREIGN KEY (schedule_id) REFERENCES class_schedule(schedule_id),
   FOREIGN KEY (created_by_teacher_id) REFERENCES teachers(teacher_id),
   UNIQUE (class_id, session_date)
 );
@@ -128,7 +127,6 @@ CREATE TABLE users (
   student_id INT NULL,
   is_active INT NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
   CONSTRAINT fk_users_student FOREIGN KEY (student_id) REFERENCES students(student_id)
 );

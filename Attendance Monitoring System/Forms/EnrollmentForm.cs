@@ -111,7 +111,7 @@ namespace Attendance_Monitoring_System.Forms
                 grid.Columns["DateOfBirth"].Visible = false;
                 grid.Columns["FullName"].Visible = false;
 
-                grid.Columns["RegistrationNo"].HeaderText = "Reg. No";
+                grid.Columns["RegistrationNo"].HeaderText = "Student ID";
                 grid.Columns["FirstName"].HeaderText = "First Name";
                 grid.Columns["LastName"].HeaderText = "Last Name";
             }

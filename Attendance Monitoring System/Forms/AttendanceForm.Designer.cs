@@ -34,9 +34,11 @@ namespace Attendance_Monitoring_System.Forms
             this.lblSession = new System.Windows.Forms.Label();
             this.cmbSession = new System.Windows.Forms.ComboBox();
             this.btnNewSession = new System.Windows.Forms.Button();
+            this.btnRenameSession = new System.Windows.Forms.Button();
             this.btnDeleteSession = new System.Windows.Forms.Button();
             this.dgvAttendance = new System.Windows.Forms.DataGridView();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lblSummary = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAttendance)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,18 +93,27 @@ namespace Attendance_Monitoring_System.Forms
             // 
             this.btnNewSession.Location = new System.Drawing.Point(440, 88);
             this.btnNewSession.Name = "btnNewSession";
-            this.btnNewSession.Size = new System.Drawing.Size(120, 30);
+            this.btnNewSession.Size = new System.Drawing.Size(100, 30);
             this.btnNewSession.TabIndex = 5;
             this.btnNewSession.Text = "New Session";
             this.btnNewSession.UseVisualStyleBackColor = true;
             // 
+            // btnRenameSession
+            // 
+            this.btnRenameSession.Location = new System.Drawing.Point(550, 88);
+            this.btnRenameSession.Name = "btnRenameSession";
+            this.btnRenameSession.Size = new System.Drawing.Size(100, 30);
+            this.btnRenameSession.TabIndex = 9;
+            this.btnRenameSession.Text = "Rename";
+            this.btnRenameSession.UseVisualStyleBackColor = true;
+            // 
             // btnDeleteSession
             // 
-            this.btnDeleteSession.Location = new System.Drawing.Point(570, 88);
+            this.btnDeleteSession.Location = new System.Drawing.Point(660, 88);
             this.btnDeleteSession.Name = "btnDeleteSession";
-            this.btnDeleteSession.Size = new System.Drawing.Size(120, 30);
+            this.btnDeleteSession.Size = new System.Drawing.Size(100, 30);
             this.btnDeleteSession.TabIndex = 6;
-            this.btnDeleteSession.Text = "Delete Session";
+            this.btnDeleteSession.Text = "Delete";
             this.btnDeleteSession.UseVisualStyleBackColor = true;
             // 
             // dgvAttendance
@@ -114,16 +125,27 @@ namespace Attendance_Monitoring_System.Forms
             this.dgvAttendance.MultiSelect = false;
             this.dgvAttendance.Name = "dgvAttendance";
             this.dgvAttendance.ReadOnly = false;
-            this.dgvAttendance.Size = new System.Drawing.Size(800, 400);
+            this.dgvAttendance.Size = new System.Drawing.Size(800, 370);
             this.dgvAttendance.TabIndex = 7;
+            // 
+            // lblSummary
+            // 
+            this.lblSummary.AutoSize = true;
+            this.lblSummary.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular);
+            this.lblSummary.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.lblSummary.Location = new System.Drawing.Point(20, 508);
+            this.lblSummary.Name = "lblSummary";
+            this.lblSummary.Size = new System.Drawing.Size(300, 17);
+            this.lblSummary.TabIndex = 10;
+            this.lblSummary.Text = "";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(20, 540);
+            this.btnSave.Location = new System.Drawing.Point(20, 535);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(150, 40);
+            this.btnSave.Size = new System.Drawing.Size(200, 45);
             this.btnSave.TabIndex = 8;
-            this.btnSave.Text = "Save Attendance";
+            this.btnSave.Text = "💾  Save All Changes";
             this.btnSave.UseVisualStyleBackColor = true;
             // 
             // AttendanceForm
@@ -131,6 +153,8 @@ namespace Attendance_Monitoring_System.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(860, 600);
+            this.Controls.Add(this.lblSummary);
+            this.Controls.Add(this.btnRenameSession);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.dgvAttendance);
             this.Controls.Add(this.btnDeleteSession);
@@ -157,8 +181,10 @@ namespace Attendance_Monitoring_System.Forms
         private System.Windows.Forms.Label lblSession;
         private System.Windows.Forms.ComboBox cmbSession;
         private System.Windows.Forms.Button btnNewSession;
+        private System.Windows.Forms.Button btnRenameSession;
         private System.Windows.Forms.Button btnDeleteSession;
         private System.Windows.Forms.DataGridView dgvAttendance;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblSummary;
     }
 }

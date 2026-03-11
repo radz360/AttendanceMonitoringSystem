@@ -12,8 +12,6 @@ namespace Attendance_Monitoring_System.Forms
         private readonly User _currentUser;
         private readonly UserService _userService = new UserService();
         private readonly AuthService _authService = new AuthService();
-        private readonly TeacherService _teacherService = new TeacherService();
-        private readonly StudentService _studentService = new StudentService();
 
         private int _selectedUserId = -1;
         private List<User> _allUsers = new List<User>();
@@ -41,10 +39,6 @@ namespace Attendance_Monitoring_System.Forms
             // Style reset password button orange
             btnResetPassword.BackColor = Color.FromArgb(211, 84, 0);
 
-            // Load ComboBox data
-            LoadTeachersComboBox();
-            LoadStudentsComboBox();
-
             // Set default role selection
             if (cmbRole.Items.Count > 0)
                 cmbRole.SelectedIndex = 0;
@@ -53,94 +47,10 @@ namespace Attendance_Monitoring_System.Forms
             LoadUsers();
         }
 
-        // ── Load Teachers into ComboBox ──────────────────────────
-        private void LoadTeachersComboBox()
-        {
-            try
-            {
-                List<Teacher> teachers = _teacherService.GetAllTeachers();
-
-                // Add a "(None)" option
-                List<Teacher> allItems = new List<Teacher>();
-                allItems.Add(new Teacher
-                {
-                    TeacherId = 0,
-                    FirstName = "(None)",
-                    LastName = "",
-                    Email = "",
-                    Designation = ""
-                });
-                allItems.AddRange(teachers);
-
-                cmbTeacher.DisplayMember = "FullName";
-                cmbTeacher.ValueMember = "TeacherId";
-                cmbTeacher.DataSource = allItems;
-
-                cmbTeacher.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                ShowError("Failed to load teachers:\n\n" + ex.Message);
-            }
-        }
-
-        // ── Load Students into ComboBox ──────────────────────────
-        private void LoadStudentsComboBox()
-        {
-            try
-            {
-                List<Student> students = _studentService.GetAllStudents();
-
-                // Add a "(None)" option
-                List<Student> allItems = new List<Student>();
-                allItems.Add(new Student
-                {
-                    StudentId = 0,
-                    RegistrationNo = "",
-                    FirstName = "(None)",
-                    LastName = "",
-                    Gender = "Other",
-                    DateOfBirth = DateTime.MinValue
-                });
-                allItems.AddRange(students);
-
-                cmbStudent.DisplayMember = "FullName";
-                cmbStudent.ValueMember = "StudentId";
-                cmbStudent.DataSource = allItems;
-
-                cmbStudent.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                ShowError("Failed to load students:\n\n" + ex.Message);
-            }
-        }
-
-        // ── Role Changed — Enable/Disable Linked ComboBoxes ──────
+        // ── Role Changed (no-op now, kept for event handler) ─────
         private void cmbRole_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string role = cmbRole.SelectedItem as string;
-
-            if (string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase))
-            {
-                cmbTeacher.Enabled = true;
-                cmbStudent.Enabled = false;
-                cmbStudent.SelectedIndex = 0;
-            }
-            else if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
-            {
-                cmbTeacher.Enabled = false;
-                cmbTeacher.SelectedIndex = 0;
-                cmbStudent.Enabled = true;
-            }
-            else
-            {
-                // Admin / Registrar — no linked teacher/student
-                cmbTeacher.Enabled = false;
-                cmbTeacher.SelectedIndex = 0;
-                cmbStudent.Enabled = false;
-                cmbStudent.SelectedIndex = 0;
-            }
+            // No linked combos to toggle anymore
         }
 
         // ── Load Users into Grid ─────────────────────────────────
@@ -172,9 +82,9 @@ namespace Attendance_Monitoring_System.Forms
 
                 dgvUsers.Columns["Username"].HeaderText = "Username";
                 dgvUsers.Columns["Role"].HeaderText = "Role";
-                dgvUsers.Columns["TeacherName"].HeaderText = "Linked Teacher";
-                dgvUsers.Columns["StudentName"].HeaderText = "Linked Student";
                 dgvUsers.Columns["IsActive"].HeaderText = "Active";
+                dgvUsers.Columns["CreatedAt"].HeaderText = "Created";
+                dgvUsers.Columns["CreatedAt"].DefaultCellStyle.Format = "yyyy-MM-dd HH:mm";
             }
         }
 
@@ -201,26 +111,8 @@ namespace Attendance_Monitoring_System.Forms
                 }
             }
 
-            // Set teacher link
-            object teacherIdValue = row.Cells["TeacherId"].Value;
-            if (teacherIdValue != null && teacherIdValue != DBNull.Value)
-                cmbTeacher.SelectedValue = Convert.ToInt32(teacherIdValue);
-            else
-                cmbTeacher.SelectedIndex = 0;
-
-            // Set student link
-            object studentIdValue = row.Cells["StudentId"].Value;
-            if (studentIdValue != null && studentIdValue != DBNull.Value)
-                cmbStudent.SelectedValue = Convert.ToInt32(studentIdValue);
-            else
-                cmbStudent.SelectedIndex = 0;
-
             // Set active checkbox
             chkActive.Checked = Convert.ToBoolean(row.Cells["IsActive"].Value);
-
-            // Disable password field during update (use Reset Password button instead)
-            txtPassword.Enabled = false;
-            lblInfo.Text = "To change password, use the 'Reset Password' button.";
         }
 
         // ── Create User ──────────────────────────────────────────
@@ -232,28 +124,12 @@ namespace Attendance_Monitoring_System.Forms
             {
                 string role = cmbRole.SelectedItem.ToString();
 
-                int? teacherId = null;
-                if (string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase)
-                    && cmbTeacher.SelectedValue != null
-                    && (int)cmbTeacher.SelectedValue > 0)
-                {
-                    teacherId = (int)cmbTeacher.SelectedValue;
-                }
-
-                int? studentId = null;
-                if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase)
-                    && cmbStudent.SelectedValue != null
-                    && (int)cmbStudent.SelectedValue > 0)
-                {
-                    studentId = (int)cmbStudent.SelectedValue;
-                }
-
                 _authService.CreateUser(
                     txtUsername.Text.Trim(),
                     txtPassword.Text,
                     role,
-                    teacherId,
-                    studentId
+                    null,
+                    null
                 );
 
                 ShowSuccess("User created successfully.");
@@ -297,29 +173,11 @@ namespace Attendance_Monitoring_System.Forms
             {
                 string role = cmbRole.SelectedItem.ToString();
 
-                int? teacherId = null;
-                if (string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase)
-                    && cmbTeacher.SelectedValue != null
-                    && (int)cmbTeacher.SelectedValue > 0)
-                {
-                    teacherId = (int)cmbTeacher.SelectedValue;
-                }
-
-                int? studentId = null;
-                if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase)
-                    && cmbStudent.SelectedValue != null
-                    && (int)cmbStudent.SelectedValue > 0)
-                {
-                    studentId = (int)cmbStudent.SelectedValue;
-                }
-
                 User user = new User
                 {
                     UserId = _selectedUserId,
                     Username = txtUsername.Text.Trim(),
                     Role = role,
-                    TeacherId = teacherId,
-                    StudentId = studentId,
                     IsActive = chkActive.Checked
                 };
 
@@ -452,9 +310,7 @@ namespace Attendance_Monitoring_System.Forms
 
             List<User> filtered = _allUsers.FindAll(u =>
                 u.Username.ToLower().Contains(keyword) ||
-                u.Role.ToLower().Contains(keyword) ||
-                (u.TeacherName != null && u.TeacherName.ToLower().Contains(keyword)) ||
-                (u.StudentName != null && u.StudentName.ToLower().Contains(keyword))
+                u.Role.ToLower().Contains(keyword)
             );
 
             PopulateGrid(filtered);
@@ -476,11 +332,7 @@ namespace Attendance_Monitoring_System.Forms
             if (cmbRole.Items.Count > 0)
                 cmbRole.SelectedIndex = 0;
 
-            cmbTeacher.SelectedIndex = 0;
-            cmbStudent.SelectedIndex = 0;
             chkActive.Checked = true;
-
-            lblInfo.Text = "Password must be at least 8 characters. Link a Teacher or Student based on the role.";
 
             dgvUsers.ClearSelection();
             txtUsername.Focus();
@@ -522,32 +374,6 @@ namespace Attendance_Monitoring_System.Forms
                 ShowWarning("Please select a role.");
                 cmbRole.Focus();
                 return false;
-            }
-
-            string role = cmbRole.SelectedItem.ToString();
-
-            if (string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase))
-            {
-                if (cmbTeacher.SelectedValue == null || (int)cmbTeacher.SelectedValue == 0)
-                {
-                    ShowWarning("Please link a teacher to this account.\n\n" +
-                                "If the teacher doesn't exist yet, create them first\n" +
-                                "in the Teachers module.");
-                    cmbTeacher.Focus();
-                    return false;
-                }
-            }
-
-            if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
-            {
-                if (cmbStudent.SelectedValue == null || (int)cmbStudent.SelectedValue == 0)
-                {
-                    ShowWarning("Please link a student to this account.\n\n" +
-                                "If the student doesn't exist yet, create them first\n" +
-                                "in the Students module.");
-                    cmbStudent.Focus();
-                    return false;
-                }
             }
 
             return true;

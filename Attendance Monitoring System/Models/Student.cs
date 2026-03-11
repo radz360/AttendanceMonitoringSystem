@@ -5,7 +5,7 @@ namespace Attendance_Monitoring_System.Models
     public class Student
     {
         public int StudentId { get; set; }
-        public string RegistrationNo { get; set; }
+        public string RegistrationNo { get; set; }  // Auto-generated YYYY-NNNN
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }          // "Male", "Female", "Other"

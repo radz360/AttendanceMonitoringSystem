@@ -8,9 +8,8 @@
         public string Role { get; set; }           // "Admin", "Registrar", "Teacher", or "Student"
         public int? TeacherId { get; set; }         // Nullable — only for Teacher role
         public int? StudentId { get; set; }         // Nullable — only for Student role
-        public string TeacherName { get; set; }     // For display purposes (from JOIN)
-        public string StudentName { get; set; }     // For display purposes (from JOIN)
         public bool IsActive { get; set; }
+        public System.DateTime CreatedAt { get; set; }
 
         public override string ToString()
         {

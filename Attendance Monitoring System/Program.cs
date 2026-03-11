@@ -29,14 +29,14 @@ namespace Attendance_Monitoring_System
             // Switch the Role value to test each sidebar configuration
 
             // Test as Admin — sees ALL 10 nav buttons
-            User testUser = new User
-            {
-                UserId = 1,
-                Username = "DevAdmin",
-                Role = "Admin",
-                TeacherId = null,
-                StudentId = null
-            };
+            //User testUser = new User
+            //{
+            //    UserId = 1,
+            //    Username = "DevAdmin",
+            //    Role = "Admin",
+            //    TeacherId = null,
+            //    StudentId = null
+            //};
 
             // Test as Registrar — hides Attendance, Remarks, Users (7 buttons)
             // User testUser = new User
@@ -68,10 +68,10 @@ namespace Attendance_Monitoring_System
             //     StudentId = 1
             // };
 
-            Application.Run(new DashboardForm(testUser));
+            //Application.Run(new DashboardForm(testUser));
 
             // ─── PRODUCTION MODE ────────────────────────────────────
-            // Application.Run(new LoginForm());
+            Application.Run(new LoginForm());
         }
     }
 }

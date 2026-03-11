@@ -16,8 +16,7 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                string sql = @"SELECT e.enrollment_id, e.class_id, e.enrolled_at,
-                       s.student_id, s.registration_no, s.first_name,
+                string sql = @"SELECT s.student_id, s.registration_no, s.first_name,
                        s.last_name, CONCAT(s.first_name, ' ', s.last_name) AS student_name,
                        s.gender, s.date_of_birth
                 FROM enrollments e
