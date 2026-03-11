@@ -21,10 +21,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetUserByUsername", conn))
+                string sql = "SELECT user_id, username, password_hash, role, teacher_id, student_id, is_active FROM users WHERE username = @p_username";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_username", username);
+                    cmd.Parameters.AddWithValue("@p_username", username);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -84,15 +84,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_CreateUser", conn))
+                string sql = "INSERT INTO users (username, password_hash, role, teacher_id, student_id) VALUES (@p_username, @p_password_hash, @p_role, @p_teacher_id, @p_student_id)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_username", username);
-                    cmd.Parameters.AddWithValue("p_password_hash", hashedPassword);
-                    cmd.Parameters.AddWithValue("p_role", role);
-                    cmd.Parameters.AddWithValue("p_teacher_id",
+                    cmd.Parameters.AddWithValue("@p_username", username);
+                    cmd.Parameters.AddWithValue("@p_password_hash", hashedPassword);
+                    cmd.Parameters.AddWithValue("@p_role", role);
+                    cmd.Parameters.AddWithValue("@p_teacher_id",
                         teacherId.HasValue ? (object)teacherId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_student_id",
+                    cmd.Parameters.AddWithValue("@p_student_id",
                         studentId.HasValue ? (object)studentId.Value : DBNull.Value);
 
                     cmd.ExecuteNonQuery();

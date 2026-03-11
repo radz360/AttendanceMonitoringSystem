@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,9 +16,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllClasses", conn))
+                string sql = @"SELECT c.class_id, c.subject_id, c.teacher_id,
+                       s.subject_code, s.subject_name,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       c.academic_year, c.semester, c.section
+                FROM classes c
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                ORDER BY c.academic_year DESC, c.semester, s.subject_code";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -41,10 +47,17 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetClassById", conn))
+                string sql = @"SELECT c.class_id, c.subject_id, c.teacher_id,
+                       s.subject_code, s.subject_name,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       c.academic_year, c.semester, c.section
+                FROM classes c
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                WHERE c.class_id = @p_class_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", classId);
+                    cmd.Parameters.AddWithValue("@p_class_id", classId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -66,14 +79,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_AddClass", conn))
+                string sql = @"INSERT INTO classes (subject_id, teacher_id, academic_year, semester, section)
+                VALUES (@p_subject_id, @p_teacher_id, @p_academic_year, @p_semester, @p_section)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_subject_id", classInfo.SubjectId);
-                    cmd.Parameters.AddWithValue("p_teacher_id", classInfo.TeacherId);
-                    cmd.Parameters.AddWithValue("p_academic_year", classInfo.AcademicYear);
-                    cmd.Parameters.AddWithValue("p_semester", classInfo.Semester);
-                    cmd.Parameters.AddWithValue("p_section", classInfo.Section);
+                    cmd.Parameters.AddWithValue("@p_subject_id", classInfo.SubjectId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", classInfo.TeacherId);
+                    cmd.Parameters.AddWithValue("@p_academic_year", classInfo.AcademicYear);
+                    cmd.Parameters.AddWithValue("@p_semester", classInfo.Semester);
+                    cmd.Parameters.AddWithValue("@p_section", classInfo.Section);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -87,15 +101,21 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateClass", conn))
+                string sql = @"UPDATE classes
+                SET subject_id = @p_subject_id,
+                    teacher_id = @p_teacher_id,
+                    academic_year = @p_academic_year,
+                    semester = @p_semester,
+                    section = @p_section
+                WHERE class_id = @p_class_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", classInfo.ClassId);
-                    cmd.Parameters.AddWithValue("p_subject_id", classInfo.SubjectId);
-                    cmd.Parameters.AddWithValue("p_teacher_id", classInfo.TeacherId);
-                    cmd.Parameters.AddWithValue("p_academic_year", classInfo.AcademicYear);
-                    cmd.Parameters.AddWithValue("p_semester", classInfo.Semester);
-                    cmd.Parameters.AddWithValue("p_section", classInfo.Section);
+                    cmd.Parameters.AddWithValue("@p_class_id", classInfo.ClassId);
+                    cmd.Parameters.AddWithValue("@p_subject_id", classInfo.SubjectId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", classInfo.TeacherId);
+                    cmd.Parameters.AddWithValue("@p_academic_year", classInfo.AcademicYear);
+                    cmd.Parameters.AddWithValue("@p_semester", classInfo.Semester);
+                    cmd.Parameters.AddWithValue("@p_section", classInfo.Section);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -109,10 +129,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteClass", conn))
+                string sql = "DELETE FROM classes WHERE class_id = @p_class_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_class_id", classId);
+                    cmd.Parameters.AddWithValue("@p_class_id", classId);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -128,10 +148,18 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetClassesByTeacherId", conn))
+                string sql = @"SELECT c.class_id, c.subject_id, c.teacher_id,
+                       s.subject_code, s.subject_name,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       c.academic_year, c.semester, c.section
+                FROM classes c
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                WHERE c.teacher_id = @p_teacher_id
+                ORDER BY c.academic_year DESC, c.semester, s.subject_code";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_teacher_id", teacherId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", teacherId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -155,10 +183,23 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_SearchClasses", conn))
+                string sql = @"SELECT c.class_id, c.subject_id, c.teacher_id,
+                       s.subject_code, s.subject_name,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       c.academic_year, c.semester, c.section
+                FROM classes c
+                INNER JOIN subjects s ON c.subject_id = s.subject_id
+                INNER JOIN teachers t ON c.teacher_id = t.teacher_id
+                WHERE s.subject_code LIKE @kw
+                   OR s.subject_name LIKE @kw
+                   OR t.first_name LIKE @kw
+                   OR t.last_name LIKE @kw
+                   OR c.academic_year LIKE @kw
+                   OR c.section LIKE @kw
+                ORDER BY c.academic_year DESC, c.semester, s.subject_code";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_keyword", keyword);
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {

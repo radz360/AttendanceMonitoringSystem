@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,9 +16,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllUsers", conn))
+                string sql = @"SELECT u.user_id, u.username, u.role, u.teacher_id, u.student_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       u.is_active
+                FROM users u
+                LEFT JOIN teachers t ON u.teacher_id = t.teacher_id
+                LEFT JOIN students s ON u.student_id = s.student_id
+                ORDER BY u.username";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -41,17 +47,23 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateUser", conn))
+                string sql = @"UPDATE users
+                SET username = @p_username,
+                    role = @p_role,
+                    teacher_id = @p_teacher_id,
+                    student_id = @p_student_id,
+                    is_active = @p_is_active
+                WHERE user_id = @p_user_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_user_id", user.UserId);
-                    cmd.Parameters.AddWithValue("p_username", user.Username);
-                    cmd.Parameters.AddWithValue("p_role", user.Role);
-                    cmd.Parameters.AddWithValue("p_teacher_id",
+                    cmd.Parameters.AddWithValue("@p_user_id", user.UserId);
+                    cmd.Parameters.AddWithValue("@p_username", user.Username);
+                    cmd.Parameters.AddWithValue("@p_role", user.Role);
+                    cmd.Parameters.AddWithValue("@p_teacher_id",
                         user.TeacherId.HasValue ? (object)user.TeacherId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_student_id",
+                    cmd.Parameters.AddWithValue("@p_student_id",
                         user.StudentId.HasValue ? (object)user.StudentId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_is_active", user.IsActive ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@p_is_active", user.IsActive ? 1 : 0);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -67,11 +79,11 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_ResetUserPassword", conn))
+                string sql = "UPDATE users SET password_hash = @p_password_hash WHERE user_id = @p_user_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_user_id", userId);
-                    cmd.Parameters.AddWithValue("p_password_hash", hashedPassword);
+                    cmd.Parameters.AddWithValue("@p_user_id", userId);
+                    cmd.Parameters.AddWithValue("@p_password_hash", hashedPassword);
 
                     cmd.ExecuteNonQuery();
                 }

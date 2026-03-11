@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using MySql.Data.MySqlClient;
 using Attendance_Monitoring_System.Models;
 
@@ -17,10 +16,22 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetRemarksBySession", conn))
+                string sql = @"SELECT r.remark_id, r.session_id, r.student_id,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       r.teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       r.category_id,
+                       rc.category_name,
+                       r.remark_text, r.remark_date
+                FROM remarks r
+                INNER JOIN students s ON r.student_id = s.student_id
+                INNER JOIN teachers t ON r.teacher_id = t.teacher_id
+                LEFT JOIN remark_categories rc ON r.category_id = rc.category_id
+                WHERE r.session_id = @p_session_id
+                ORDER BY r.remark_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", sessionId);
+                    cmd.Parameters.AddWithValue("@p_session_id", sessionId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -44,9 +55,20 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllRemarks", conn))
+                string sql = @"SELECT r.remark_id, r.session_id, r.student_id,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       r.teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       r.category_id,
+                       rc.category_name,
+                       r.remark_text, r.remark_date
+                FROM remarks r
+                INNER JOIN students s ON r.student_id = s.student_id
+                INNER JOIN teachers t ON r.teacher_id = t.teacher_id
+                LEFT JOIN remark_categories rc ON r.category_id = rc.category_id
+                ORDER BY r.remark_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -70,10 +92,22 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetRemarksByStudentId", conn))
+                string sql = @"SELECT r.remark_id, r.session_id, r.student_id,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       r.teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       r.category_id,
+                       rc.category_name,
+                       r.remark_text, r.remark_date
+                FROM remarks r
+                INNER JOIN students s ON r.student_id = s.student_id
+                INNER JOIN teachers t ON r.teacher_id = t.teacher_id
+                LEFT JOIN remark_categories rc ON r.category_id = rc.category_id
+                WHERE r.student_id = @p_student_id
+                ORDER BY r.remark_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_student_id", studentId);
+                    cmd.Parameters.AddWithValue("@p_student_id", studentId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -97,10 +131,27 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_SearchRemarks", conn))
+                string sql = @"SELECT r.remark_id, r.session_id, r.student_id,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name,
+                       r.teacher_id,
+                       CONCAT(t.first_name, ' ', t.last_name) AS teacher_name,
+                       r.category_id,
+                       rc.category_name,
+                       r.remark_text, r.remark_date
+                FROM remarks r
+                INNER JOIN students s ON r.student_id = s.student_id
+                INNER JOIN teachers t ON r.teacher_id = t.teacher_id
+                LEFT JOIN remark_categories rc ON r.category_id = rc.category_id
+                WHERE s.first_name LIKE @kw
+                   OR s.last_name LIKE @kw
+                   OR r.remark_text LIKE @kw
+                   OR t.first_name LIKE @kw
+                   OR t.last_name LIKE @kw
+                   OR rc.category_name LIKE @kw
+                ORDER BY r.remark_date DESC";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_keyword", keyword);
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword + "%");
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -122,15 +173,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_AddRemark", conn))
+                string sql = @"INSERT INTO remarks (session_id, student_id, teacher_id, category_id, remark_text)
+                VALUES (@p_session_id, @p_student_id, @p_teacher_id, @p_category_id, @p_remark_text)";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", remark.SessionId);
-                    cmd.Parameters.AddWithValue("p_student_id", remark.StudentId);
-                    cmd.Parameters.AddWithValue("p_teacher_id", remark.TeacherId);
-                    cmd.Parameters.AddWithValue("p_category_id",
+                    cmd.Parameters.AddWithValue("@p_session_id", remark.SessionId);
+                    cmd.Parameters.AddWithValue("@p_student_id", remark.StudentId);
+                    cmd.Parameters.AddWithValue("@p_teacher_id", remark.TeacherId);
+                    cmd.Parameters.AddWithValue("@p_category_id",
                         remark.CategoryId.HasValue ? (object)remark.CategoryId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_remark_text", remark.RemarkText);
+                    cmd.Parameters.AddWithValue("@p_remark_text", remark.RemarkText);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -144,13 +196,16 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_UpdateRemark", conn))
+                string sql = @"UPDATE remarks
+                SET category_id = @p_category_id,
+                    remark_text = @p_remark_text
+                WHERE remark_id = @p_remark_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_remark_id", remark.RemarkId);
-                    cmd.Parameters.AddWithValue("p_category_id",
+                    cmd.Parameters.AddWithValue("@p_remark_id", remark.RemarkId);
+                    cmd.Parameters.AddWithValue("@p_category_id",
                         remark.CategoryId.HasValue ? (object)remark.CategoryId.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_remark_text", remark.RemarkText);
+                    cmd.Parameters.AddWithValue("@p_remark_text", remark.RemarkText);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -164,10 +219,10 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_DeleteRemark", conn))
+                string sql = "DELETE FROM remarks WHERE remark_id = @p_remark_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_remark_id", remarkId);
+                    cmd.Parameters.AddWithValue("@p_remark_id", remarkId);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -183,9 +238,9 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetAllRemarkCategories", conn))
+                string sql = "SELECT category_id, category_name FROM remark_categories ORDER BY category_id";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -213,10 +268,15 @@ namespace Attendance_Monitoring_System.Services
             {
                 conn.Open();
 
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetStudentsBySession", conn))
+                string sql = @"SELECT DISTINCT ar.student_id, s.registration_no,
+                       CONCAT(s.first_name, ' ', s.last_name) AS student_name
+                FROM attendance_records ar
+                INNER JOIN students s ON ar.student_id = s.student_id
+                WHERE ar.session_id = @p_session_id
+                ORDER BY student_name";
+                using (MySqlCommand cmd = new MySqlCommand(sql, conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_session_id", sessionId);
+                    cmd.Parameters.AddWithValue("@p_session_id", sessionId);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
