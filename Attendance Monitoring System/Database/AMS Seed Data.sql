@@ -1,11 +1,6 @@
--- ============================================================
--- AMS Seed Data
--- Run this AFTER executing "AMS DB.sql" to populate test data.
--- ============================================================
-
 USE attendance_db;
 
--- ── Teachers (5) ─────────────────────────────────────────────
+-- ── Teachers ─────────────────────────────────────────────
 INSERT INTO teachers (first_name, last_name, email, designation) VALUES
 ('Maria',   'Santos',   'maria.santos@school.edu',   'Professor'),
 ('Roberto', 'Cruz',     'roberto.cruz@school.edu',   'Associate Professor'),
@@ -13,7 +8,7 @@ INSERT INTO teachers (first_name, last_name, email, designation) VALUES
 ('Carlos',  'Garcia',   'carlos.garcia@school.edu',  'Assistant Professor'),
 ('Diana',   'Flores',   'diana.flores@school.edu',   'Professor');
 
--- ── Students (5) ─────────────────────────────────────────────
+-- ── Students ─────────────────────────────────────────────
 INSERT INTO students (registration_no, first_name, last_name, gender, date_of_birth) VALUES
 ('2025-0001', 'Jane',    'Doe',      'Female', '2003-01-15'),
 ('2025-0002', 'John',    'Smith',    'Male',   '2004-03-22'),
@@ -21,7 +16,7 @@ INSERT INTO students (registration_no, first_name, last_name, gender, date_of_bi
 ('2025-0004', 'Michael', 'Williams', 'Male',   '2004-09-05'),
 ('2025-0005', 'Sarah',   'Brown',    'Female', '2003-12-18');
 
--- ── Subjects (5) ─────────────────────────────────────────────
+-- ── Subjects ─────────────────────────────────────────────
 INSERT INTO subjects (subject_code, subject_name) VALUES
 ('CS101', 'Introduction to Computer Science'),
 ('CS201', 'Data Structures and Algorithms'),
@@ -29,7 +24,7 @@ INSERT INTO subjects (subject_code, subject_name) VALUES
 ('MA101', 'Calculus I'),
 ('EN101', 'English Communication');
 
--- ── Classes (5) ──────────────────────────────────────────────
+-- ── Classes ──────────────────────────────────────────────
 -- teacher_id references: 1=Santos, 2=Cruz, 3=Reyes, 4=Garcia, 5=Flores
 INSERT INTO classes (subject_id, teacher_id, academic_year, semester, section) VALUES
 (1, 1, '2024-2025', 1, 'A'),
@@ -38,8 +33,7 @@ INSERT INTO classes (subject_id, teacher_id, academic_year, semester, section) V
 (4, 4, '2024-2025', 1, 'B'),
 (5, 5, '2024-2025', 2, 'A');
 
--- ── Class Schedules (5) ──────────────────────────────────────
--- day_of_week: 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri
+-- ── Class Schedules ──────────────────────────────────────
 INSERT INTO class_schedule (class_id, day_of_week, start_time, end_time, room) VALUES
 (1, 1, '08:00 AM', '09:30 AM', 'Room 101'),
 (2, 2, '10:00 AM', '11:30 AM', 'Room 202'),
@@ -47,14 +41,14 @@ INSERT INTO class_schedule (class_id, day_of_week, start_time, end_time, room) V
 (4, 4, '08:00 AM', '09:30 AM', 'Room 104'),
 (5, 5, '10:00 AM', '11:30 AM', 'Room 205');
 
--- ── Enrollments (10 — each student in 2 classes) ────────────
+-- ── Enrollments ────────────
 INSERT INTO enrollments (class_id, student_id) VALUES
 (1, 1), (1, 2), (1, 3),    -- CS101-A: Doe, Smith, Johnson
 (2, 2), (2, 4), (2, 5),    -- CS201-A: Smith, Williams, Brown
 (3, 1), (3, 3),             -- CS301-A: Doe, Johnson
 (4, 4), (4, 5);             -- MA101-B: Williams, Brown
 
--- ── Attendance Sessions (5) ──────────────────────────────────
+-- ── Attendance Sessions ──────────────────────────────────
 INSERT INTO attendance_sessions (class_id, session_name, session_date, created_by_teacher_id) VALUES
 (1, 'Week 1 Lecture',  '2025-01-06', 1),
 (1, 'Week 2 Lecture',  '2025-01-13', 1),
@@ -62,7 +56,7 @@ INSERT INTO attendance_sessions (class_id, session_name, session_date, created_b
 (3, NULL,               '2025-01-08', 1),
 (4, 'Midterm Review',   '2025-01-09', 4);
 
--- ── Attendance Records (15) ──────────────────────────────────
+-- ── Attendance Records ──────────────────────────────────
 -- Session 1: CS101-A Week 1 (Doe, Smith, Johnson)
 INSERT INTO attendance_records (session_id, student_id, status_id, time_in) VALUES
 (1, 1, 1, '2025-01-06 08:05:00'),   -- Doe: Present
@@ -91,7 +85,7 @@ INSERT INTO attendance_records (session_id, student_id, status_id, time_in) VALU
 (5, 4, 1, '2025-01-09 08:02:00'),   -- Williams: Present
 (5, 5, 1, '2025-01-09 08:00:00');   -- Brown: Present
 
--- ── Remarks (5) ──────────────────────────────────────────────
+-- ── Remarks ──────────────────────────────────────────────
 INSERT INTO remarks (session_id, student_id, teacher_id, category_id, remark_text) VALUES
 (1, 2, 1, 1, 'Arrived 22 minutes late due to traffic.'),
 (2, 2, 1, 4, 'Did not attend, no notice given.'),
@@ -99,7 +93,7 @@ INSERT INTO remarks (session_id, student_id, teacher_id, category_id, remark_tex
 (3, 5, 2, 1, 'Arrived 18 minutes late, warned about punctuality.'),
 (4, 3, 1, 3, 'Missed class, needs to submit makeup assignment.');
 
--- ── Users (11) ───────────────────────────────────────────────
+-- ── Users ───────────────────────────────────────────────
 -- Passwords in comments for reference (hashed with BCrypt below):
 --   Admin:     admin      / admin123
 --   Registrar: registrar  / registrar123
