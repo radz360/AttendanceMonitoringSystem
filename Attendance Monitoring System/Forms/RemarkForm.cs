@@ -58,7 +58,7 @@ namespace Attendance_Monitoring_System.Forms
             {
                 // Student: read-only — hide input panel, show only their remarks
                 pnlInput.Visible = false;
-                dgvRemarks.Location = new Point(20, 60);
+                dgvRemarks.Location = new Point(20, 90);
                 dgvRemarks.Height = 490;
                 lblSearch.Location = new Point(20, 52);
                 txtSearch.Location = new Point(80, 49);
