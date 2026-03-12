@@ -250,6 +250,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database\Advanced Queries.sql" />
     <Content Include="Database\AMS DB.sql" />
     <Content Include="Database\AMS Seed Data.sql" />
     <Content Include="Resources\icon_attendance.png" />
